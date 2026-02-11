@@ -8,16 +8,25 @@ import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
+import PortalChoice from './pages/PortalChoice';
+import AdminLogin from './pages/AdminLogin';
+import AdminRegister from './pages/AdminRegister';
+import { Toaster } from 'react-hot-toast';
+
 function App() {
   return (
     <AuthProvider>
+      <Toaster position="top-right" />
       <Router>
-        <div className="min-h-screen bg-slate-950">
+        <div className="min-h-screen bg-slate-50 tracking-tight">
           <Navbar />
           <main className="container mx-auto px-4 py-8">
             <Routes>
+              <Route path="/" element={<PortalChoice />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/register" element={<AdminRegister />} />
               <Route
                 path="/dashboard"
                 element={
@@ -27,14 +36,14 @@ function App() {
                 }
               />
               <Route
-                path="/admin"
+                path="/admin-dashboard"
                 element={
                   <ProtectedRoute adminOnly={true}>
                     <AdminDashboard />
                   </ProtectedRoute>
                 }
               />
-              <Route path="/" element={<Navigate to="/dashboard" />} />
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </main>
         </div>

@@ -1,68 +1,175 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Shield, LogOut, LayoutDashboard, User } from 'lucide-react';
+import { Shield, LogOut, LayoutDashboard, User, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
 
     const handleLogout = () => {
         logout();
-        navigate('/login');
+        setIsLogoutConfirmOpen(false);
+        setIsMenuOpen(false);
+        navigate('/');
     };
 
-    return (
-        <nav className="glass sticky top-0 z-50">
-            <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                <Link to="/" className="flex items-center gap-2 text-xl font-bold text-white">
-                    <Shield className="text-blue-500" />
-                    <span>CMS <span className="text-blue-500">Pro</span></span>
-                </Link>
+    const isGateway = location.pathname === '/';
+    const isAdminPortal = location.pathname.includes('/admin');
+    const isUserPortal = !isGateway && !isAdminPortal;
 
-                <div className="flex items-center gap-6">
-                    {user ? (
-                        <>
-                            <div className="flex items-center gap-2 text-slate-300">
-                                <User size={18} />
-                                <span className="text-sm font-medium">{user.name}</span>
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 capitalize">
-                                    {user.role}
-                                </span>
-                            </div>
-
-                            {user.role === 'admin' && (
-                                <Link
-                                    to="/admin"
-                                    className="flex items-center gap-1 text-slate-300 hover:text-white transition-colors"
-                                >
-                                    <LayoutDashboard size={18} />
-                                    <span className="text-sm">Admin Panel</span>
-                                </Link>
-                            )}
-
-                            <button
-                                onClick={handleLogout}
-                                className="flex items-center gap-1 text-red-400 hover:text-red-300 transition-colors"
-                            >
-                                <LogOut size={18} />
-                                <span className="text-sm ml-1">Sign Out</span>
-                            </button>
-                        </>
-                    ) : (
-                        <div className="flex gap-4">
-                            <Link to="/login" className="text-slate-300 hover:text-white text-sm">Login</Link>
-                            <Link
-                                to="/register"
-                                className="premium-gradient px-4 py-1.5 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
-                            >
-                                Get Started
-                            </Link>
+    const NavLinks = () => (
+        <>
+            {user ? (
+                <>
+                    <div className="flex items-center gap-2 text-slate-600 px-4 py-2 bg-slate-50 md:bg-transparent rounded-xl md:rounded-none">
+                        <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center border border-indigo-100">
+                            <User size={16} className="text-indigo-600" />
                         </div>
+                        <div className="flex flex-col md:flex-row md:items-center md:gap-2">
+                            <span className="text-sm font-semibold">{user.name}</span>
+                            <span className="text-[10px] w-fit px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border border-slate-200">
+                                {user.role}
+                            </span>
+                        </div>
+                    </div>
+
+                    {user.role === 'admin' ? (
+                        <Link
+                            to="/admin-dashboard"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition-all font-medium px-4 md:px-0 py-2 md:py-0"
+                        >
+                            <LayoutDashboard size={18} />
+                            <span className="text-sm">Admin Panel</span>
+                        </Link>
+                    ) : (
+                        <Link
+                            to="/dashboard"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition-all font-medium px-4 md:px-0 py-2 md:py-0"
+                        >
+                            <LayoutDashboard size={18} />
+                            <span className="text-sm">Dashboard</span>
+                        </Link>
                     )}
+
+                    <button
+                        onClick={() => setIsLogoutConfirmOpen(true)}
+                        className="flex items-center gap-1.5 text-slate-400 hover:text-red-500 transition-all font-medium px-4 md:px-0 py-2 md:py-0"
+                    >
+                        <LogOut size={18} />
+                        <span className="text-sm">Sign Out</span>
+                    </button>
+                </>
+            ) : (
+                !isGateway && (
+                    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 px-4 md:px-0 py-2 md:py-0">
+                        <Link to={isAdminPortal ? "/admin/login" : "/login"} onClick={() => setIsMenuOpen(false)} className="text-slate-600 hover:text-indigo-600 text-sm font-semibold transition-colors">Login</Link>
+                        <Link
+                            to={isAdminPortal ? "/admin/register" : "/register"}
+                            onClick={() => setIsMenuOpen(false)}
+                            className="premium-gradient px-6 py-2 rounded-2xl text-sm font-bold text-white premium-shadow hover:opacity-90 transition-all active:scale-95 text-center"
+                        >
+                            Get Started
+                        </Link>
+                    </div>
+                )
+            )}
+        </>
+    );
+
+    return (
+        <>
+            <nav className="glass sticky top-0 z-50">
+                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+                    <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 text-xl font-extrabold text-slate-900 tracking-tighter">
+                        <Shield className="text-indigo-600 fill-indigo-50" size={28} />
+                        <span className="font-outfit">
+                            CMS <span className="text-indigo-600">Pro</span>
+                            {isUserPortal && <span className="ml-2 text-slate-400 text-[10px] sm:text-sm font-bold uppercase tracking-widest">User</span>}
+                            {isAdminPortal && <span className="ml-2 text-slate-400 text-[10px] sm:text-sm font-bold uppercase tracking-widest">Admin</span>}
+                        </span>
+                    </Link>
+
+                    {/* Desktop Menu */}
+                    <div className="hidden md:flex items-center gap-6">
+                        <NavLinks />
+                    </div>
+
+                    {/* Mobile Menu Toggle */}
+                    <div className="md:hidden">
+                        <button
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            className="p-2 text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"
+                        >
+                            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </nav>
+
+                {/* Mobile Menu Overlay */}
+                <AnimatePresence>
+                    {isMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="md:hidden border-t border-slate-100 bg-white/80 backdrop-blur-xl overflow-hidden"
+                        >
+                            <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
+                                <NavLinks />
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </nav>
+
+            {/* Logout Confirmation Modal */}
+            <AnimatePresence>
+                {isLogoutConfirmOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsLogoutConfirmOpen(false)}
+                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative bg-white rounded-3xl p-8 premium-shadow max-w-sm w-full text-center"
+                        >
+                            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <LogOut className="text-red-500" size={32} />
+                            </div>
+                            <h3 className="text-2xl font-black text-slate-900 font-outfit mb-2">Sign Out?</h3>
+                            <p className="text-slate-500 font-medium mb-8">Are you sure you want to log out of your account?</p>
+                            <div className="grid grid-cols-2 gap-4">
+                                <button
+                                    onClick={() => setIsLogoutConfirmOpen(false)}
+                                    className="px-6 py-3 rounded-xl border border-slate-100 text-slate-600 font-bold hover:bg-slate-50 transition-all"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleLogout}
+                                    className="px-6 py-3 rounded-xl bg-red-500 text-white font-bold premium-shadow hover:bg-red-600 transition-all active:scale-95"
+                                >
+                                    Sign Out
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+        </>
     );
 };
 

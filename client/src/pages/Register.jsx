@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { UserPlus, Mail, Lock, User, AlertCircle } from 'lucide-react';
+import { UserPlus, Mail, Lock, User, AlertCircle, ArrowLeft } from 'lucide-react';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -31,118 +31,138 @@ const Register = () => {
 
         setLoading(true);
         try {
-            await register(name, email, password);
+            const data = await register(name, email, password);
+            if (data.user.role === 'admin') {
+                logout(); // Clear accidental admin session
+                setError('Administrators must use the dedicated Admin Portal to register.');
+                return;
+            }
             navigate('/dashboard');
         } catch (err) {
-            setError(err.response?.data?.message || 'Registration failed');
+            console.error('Registration Error:', err);
+            if (!err.response) {
+                setError('Server is not reachable. Is the backend running?');
+            } else if (err.response.status === 400 && err.response.data?.message?.includes('E11000')) {
+                setError('Email is already registered');
+            } else {
+                setError(err.response?.data?.message || 'Registration failed. Check if MongoDB is running.');
+            }
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[80vh]">
+        <div className="flex items-center justify-center min-h-[85vh] p-6">
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="glass w-full max-w-md p-8 rounded-2xl"
+                className="w-full max-w-[420px]"
             >
-                <div className="flex flex-col items-center mb-8">
-                    <div className="w-14 h-14 premium-gradient rounded-xl flex items-center justify-center mb-4">
-                        <UserPlus className="text-white" size={28} />
-                    </div>
-                    <h1 className="text-3xl font-bold">Create Account</h1>
-                    <p className="text-slate-400 mt-2">Join our smart management system</p>
+                <div className="mb-4 flex items-center justify-between">
+                    <Link to="/" className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 font-bold text-sm transition-all group">
+                        <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back to Portal
+                    </Link>
                 </div>
 
-                {error && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-3 rounded-lg flex items-center gap-2 mb-6">
-                        <AlertCircle size={18} />
-                        <span className="text-sm font-medium">{error}</span>
-                    </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Full Name</label>
-                        <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={17} />
-                            <input
-                                type="text"
-                                name="name"
-                                required
-                                value={name}
-                                onChange={onChange}
-                                className="bg-slate-900/50 border border-slate-800 w-full pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm"
-                                placeholder="John Doe"
-                            />
+                <div className="premium-card p-6 sm:p-8">
+                    <div className="flex flex-col items-center mb-8 sm:mb-10">
+                        <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <User className="text-indigo-600" size={32} />
                         </div>
+                        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-outfit text-slate-900 text-center">Create Account</h1>
+                        <p className="text-slate-500 mt-2 font-medium text-sm sm:text-base text-center">Join our smart management system</p>
                     </div>
 
-                    <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Email Address</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={17} />
-                            <input
-                                type="email"
-                                name="email"
-                                required
-                                value={email}
-                                onChange={onChange}
-                                className="bg-slate-900/50 border border-slate-800 w-full pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm"
-                                placeholder="name@company.com"
-                            />
+                    {error && (
+                        <div className="bg-red-50/50 border border-red-100 text-red-600 px-4 py-3.5 rounded-2xl flex items-center gap-3 mb-8 animate-pulse">
+                            <AlertCircle size={20} />
+                            <span className="text-sm font-semibold">{error}</span>
                         </div>
-                    </div>
+                    )}
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Password</label>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={17} />
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Full Name</label>
+                            <div className="relative group">
+                                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
                                 <input
-                                    type="password"
-                                    name="password"
+                                    type="text"
+                                    name="name"
                                     required
-                                    value={password}
+                                    value={name}
                                     onChange={onChange}
-                                    className="bg-slate-900/50 border border-slate-800 w-full pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm"
-                                    placeholder="••••••••"
+                                    className="input-field"
+                                    placeholder="John Doe"
                                 />
                             </div>
                         </div>
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Confirm</label>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={17} />
+
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Email Address</label>
+                            <div className="relative group">
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
                                 <input
-                                    type="password"
-                                    name="confirmPassword"
+                                    type="email"
+                                    name="email"
                                     required
-                                    value={confirmPassword}
+                                    value={email}
                                     onChange={onChange}
-                                    className="bg-slate-900/50 border border-slate-800 w-full pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm"
-                                    placeholder="••••••••"
+                                    className="input-field"
+                                    placeholder="name@company.com"
                                 />
                             </div>
                         </div>
-                    </div>
 
-                    <div className="pt-2">
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full premium-gradient py-2.5 rounded-lg font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-                        >
-                            {loading ? 'Creating account...' : 'Create Account'}
-                        </button>
-                    </div>
-                </form>
+                        <div className="grid grid-cols-2 gap-5">
+                            <div className="space-y-2">
+                                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Password</label>
+                                <div className="relative group">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        required
+                                        value={password}
+                                        onChange={onChange}
+                                        className="input-field"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Confirm</label>
+                                <div className="relative group">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+                                    <input
+                                        type="password"
+                                        name="confirmPassword"
+                                        required
+                                        value={confirmPassword}
+                                        onChange={onChange}
+                                        className="input-field"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+                            </div>
+                        </div>
 
-                <p className="text-center text-slate-400 mt-6 text-sm">
-                    Already have an account? {' '}
-                    <Link to="/login" className="text-blue-500 hover:text-blue-400 font-medium">Log in</Link>
-                </p>
+                        <div className="pt-4">
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full premium-gradient py-4 rounded-2xl font-extrabold text-white premium-shadow hover:opacity-95 transition-all active:scale-[0.98] disabled:opacity-50"
+                            >
+                                {loading ? 'Creating account...' : 'Create Account'}
+                            </button>
+                        </div>
+                    </form>
+
+                    <p className="text-center text-slate-500 mt-8 text-sm font-medium">
+                        Already have an account? {' '}
+                        <Link to="/login" className="text-indigo-600 hover:text-indigo-700 font-bold decoration-2 underline-offset-4 hover:underline transition-all">Log in</Link>
+                    </p>
+                </div>
             </motion.div>
         </div>
     );

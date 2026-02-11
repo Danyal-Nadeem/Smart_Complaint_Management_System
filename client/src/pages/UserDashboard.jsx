@@ -63,17 +63,17 @@ const UserDashboard = () => {
         : complaints.filter(c => c.status === filter);
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto space-y-10 px-4 sm:px-6 lg:px-8 py-10">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-3xl font-bold text-white">Your Complaints</h1>
-                    <p className="text-slate-400 mt-1">Submit new complaints and track their resolution status.</p>
+                    <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">Your Complaints</h1>
+                    <p className="text-slate-500 mt-2 font-medium">Submit new complaints and track their resolution status in real-time.</p>
                 </div>
                 <button
                     onClick={() => setIsFormOpen(!isFormOpen)}
-                    className="flex items-center gap-2 premium-gradient px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-transform"
+                    className="flex items-center gap-2 premium-gradient px-8 py-3.5 rounded-2xl font-bold text-white shadow-xl shadow-indigo-200 hover:scale-[1.02] active:scale-95 transition-all"
                 >
-                    <PlusCircle size={20} />
+                    <PlusCircle size={22} />
                     Submit Complaint
                 </button>
             </div>
@@ -86,31 +86,35 @@ const UserDashboard = () => {
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden"
                     >
-                        <form onSubmit={handleSubmit} className="glass p-8 rounded-2xl grid md:grid-cols-2 gap-6">
+                        <form onSubmit={handleSubmit} className="premium-card p-6 sm:p-10 grid md:grid-cols-2 gap-8 mb-10">
                             <div className="md:col-span-2 flex items-center justify-between mb-2">
-                                <h2 className="text-xl font-bold flex items-center gap-2">
-                                    <FileText className="text-blue-500" />
+                                <h2 className="text-2xl font-bold font-outfit text-slate-900 flex items-center gap-3">
+                                    <div className="p-2 bg-indigo-50 rounded-xl">
+                                        <FileText className="text-indigo-600" size={24} />
+                                    </div>
                                     New Complaint Details
                                 </h2>
-                                <button type="button" onClick={() => setIsFormOpen(false)} className="text-slate-500 hover:text-white">Cancel</button>
+                                <button type="button" onClick={() => setIsFormOpen(false)} className="text-slate-400 hover:text-red-500 font-bold transition-colors">Cancel</button>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-300">Complaint Title</label>
-                                <input
-                                    type="text" required
-                                    className="bg-slate-900 border border-slate-800 w-full px-4 py-2.5 rounded-xl focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all"
-                                    placeholder="e.g. WiFi issue in Hostel Wing B"
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                />
+                            <div className="space-y-2.5">
+                                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Complaint Title</label>
+                                <div className="relative group">
+                                    <input
+                                        type="text" required
+                                        className="input-field pl-5"
+                                        placeholder="e.g. WiFi issue in Hostel Wing B"
+                                        value={formData.title}
+                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                    />
+                                </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300">Category</label>
+                            <div className="grid grid-cols-2 gap-5">
+                                <div className="space-y-2.5">
+                                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Category</label>
                                     <select
-                                        className="bg-slate-900 border border-slate-800 w-full px-4 py-2.5 rounded-xl focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all"
+                                        className="input-field pl-5 appearance-none"
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                                     >
@@ -121,10 +125,10 @@ const UserDashboard = () => {
                                         <option>Other</option>
                                     </select>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300">Priority</label>
+                                <div className="space-y-2.5">
+                                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Priority</label>
                                     <select
-                                        className="bg-slate-900 border border-slate-800 w-full px-4 py-2.5 rounded-xl focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all"
+                                        className="input-field pl-5 appearance-none"
                                         value={formData.priority}
                                         onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
                                     >
@@ -135,11 +139,11 @@ const UserDashboard = () => {
                                 </div>
                             </div>
 
-                            <div className="md:col-span-2 space-y-2">
-                                <label className="text-sm font-medium text-slate-300">Description</label>
+                            <div className="md:col-span-2 space-y-2.5">
+                                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Description</label>
                                 <textarea
-                                    required rows="4"
-                                    className="bg-slate-900 border border-slate-800 w-full px-4 py-2.5 rounded-xl focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all resize-none"
+                                    required rows="5"
+                                    className="input-field pl-5 resize-none h-40"
                                     placeholder="Provide detailed information about your issue..."
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -147,8 +151,8 @@ const UserDashboard = () => {
                             </div>
 
                             <div className="md:col-span-2 flex justify-end">
-                                <button type="submit" className="premium-gradient px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:opacity-90 transition-opacity">
-                                    <Send size={18} />
+                                <button type="submit" className="premium-gradient px-12 py-4 rounded-2xl font-extrabold text-white flex items-center gap-3 premium-shadow hover:opacity-95 transition-all active:scale-95">
+                                    <Send size={20} />
                                     Submit Ticket
                                 </button>
                             </div>
@@ -157,16 +161,20 @@ const UserDashboard = () => {
                 )}
             </AnimatePresence>
 
-            <div className="space-y-6">
-                <div className="flex items-center gap-4 border-b border-slate-800 pb-4 overflow-x-auto">
-                    <Filter size={18} className="text-slate-500 shrink-0" />
+            <div className="space-y-8">
+                <div className="flex items-center gap-4 border-b border-slate-100 pb-5 overflow-x-auto scrollbar-hide">
+                    <div className="bg-slate-100 p-2 rounded-xl">
+                        <Filter size={18} className="text-slate-500 shrink-0" />
+                    </div>
                     {['All', 'Pending', 'In Progress', 'Resolved', 'Rejected'].map(status => (
                         <button
                             key={status}
                             onClick={() => setFilter(status)}
                             className={clsx(
-                                "px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all",
-                                filter === status ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" : "text-slate-500 hover:text-white"
+                                "px-6 py-2 rounded-2xl text-sm font-bold whitespace-nowrap transition-all",
+                                filter === status
+                                    ? "bg-white text-indigo-600 border border-indigo-100 shadow-sm shadow-indigo-100/50 scale-105"
+                                    : "text-slate-500 hover:text-slate-900 border border-transparent"
                             )}
                         >
                             {status}
@@ -175,54 +183,60 @@ const UserDashboard = () => {
                 </div>
 
                 {loading ? (
-                    <div className="flex justify-center py-12">
-                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-primary-500"></div>
+                    <div className="flex justify-center py-20">
+                        <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-100 border-t-indigo-600"></div>
                     </div>
                 ) : filteredComplaints.length === 0 ? (
-                    <div className="glass p-12 rounded-3xl flex flex-col items-center justify-center text-center">
-                        <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mb-4">
-                            <List className="text-slate-600" size={32} />
+                    <div className="premium-card p-20 flex flex-col items-center justify-center text-center">
+                        <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
+                            <List className="text-slate-300" size={40} />
                         </div>
-                        <h3 className="text-xl font-bold">No complaints found</h3>
-                        <p className="text-slate-500 mt-1 max-w-xs">You haven't submitted any complaints matching this filter yet.</p>
+                        <h3 className="text-2xl font-bold font-outfit text-slate-900">No complaints found</h3>
+                        <p className="text-slate-500 mt-2 max-w-xs font-medium">You haven't submitted any complaints matching this filter yet.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredComplaints.map((complaint) => (
                             <motion.div
                                 layout
                                 key={complaint._id}
-                                className="glass p-6 rounded-2xl hover:border-slate-700 transition-colors group relative overflow-hidden"
+                                className="premium-card p-8 group relative overflow-hidden"
                             >
-                                <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <Shield size={64} />
+                                <div className="absolute top-0 right-0 p-5 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+                                    <Shield size={80} className="text-indigo-600" />
                                 </div>
-                                <div className="flex justify-between items-start mb-4">
+                                <div className="flex justify-between items-start mb-6">
                                     <span className={clsx(
-                                        "px-2.5 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider",
-                                        complaint.priority === 'High' ? "bg-red-500/20 text-red-500" :
-                                            complaint.priority === 'Medium' ? "bg-yellow-500/20 text-yellow-500" : "bg-green-500/20 text-green-500"
+                                        "px-3 py-1 rounded-xl text-[10px] uppercase font-black tracking-widest border",
+                                        complaint.priority === 'High' ? "bg-red-50 text-red-600 border-red-100" :
+                                            complaint.priority === 'Medium' ? "bg-amber-50 text-amber-600 border-amber-100" : "bg-emerald-50 text-emerald-600 border-emerald-100"
                                     )}>
-                                        {complaint.priority} Priority
+                                        {complaint.priority}
                                     </span>
-                                    <div className="flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded bg-slate-900 border border-slate-800">
+                                    <div className="flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-xl bg-white border border-slate-100 shadow-sm shadow-slate-100/50">
                                         {statusIcons[complaint.status]}
-                                        {complaint.status}
+                                        <span className="text-slate-700 uppercase tracking-tighter">{complaint.status}</span>
                                     </div>
                                 </div>
 
-                                <h3 className="text-lg font-bold mb-2 line-clamp-1 group-hover:text-blue-400 transition-colors uppercase tracking-tight">{complaint.title}</h3>
-                                <p className="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed">{complaint.description}</p>
+                                <h3 className="text-xl font-extrabold mb-3 line-clamp-1 group-hover:text-indigo-600 transition-colors uppercase tracking-tight font-outfit text-slate-900">{complaint.title}</h3>
+                                <p className="text-slate-500 text-sm mb-6 line-clamp-3 leading-relaxed font-medium">{complaint.description}</p>
 
-                                <div className="flex items-center justify-between pt-4 border-t border-slate-800">
-                                    <span className="text-xs text-slate-500">{new Date(complaint.createdAt).toLocaleDateString()}</span>
-                                    <span className="text-xs font-medium px-2 py-1 bg-slate-800 rounded-lg text-slate-300">{complaint.category}</span>
+                                <div className="flex items-center justify-between pt-5 border-t border-slate-50">
+                                    <div className="flex items-center gap-2 text-xs text-slate-400 font-bold">
+                                        <Clock size={14} />
+                                        {new Date(complaint.createdAt).toLocaleDateString()}
+                                    </div>
+                                    <span className="text-[11px] font-black px-3 py-1.5 bg-indigo-50/50 rounded-xl text-indigo-600 border border-indigo-50 uppercase tracking-widest">{complaint.category}</span>
                                 </div>
 
                                 {complaint.resolution && (
-                                    <div className="mt-4 p-3 bg-green-500/10 rounded-xl border border-green-500/20">
-                                        <p className="text-[11px] font-bold text-green-500 uppercase mb-1">Official Response:</p>
-                                        <p className="text-xs text-green-500/80 italic">{complaint.resolution}</p>
+                                    <div className="mt-5 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 shadow-inner">
+                                        <div className="flex items-center gap-2 mb-1.5">
+                                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                                            <p className="text-[11px] font-black text-emerald-600 uppercase tracking-[0.1em]">Official Response</p>
+                                        </div>
+                                        <p className="text-xs text-emerald-700 font-medium leading-relaxed italic">"{complaint.resolution}"</p>
                                     </div>
                                 )}
                             </motion.div>
