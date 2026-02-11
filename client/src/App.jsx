@@ -20,7 +20,7 @@ function App() {
       <Router>
         <div className="min-h-screen bg-slate-50 tracking-tight">
           <Navbar />
-          <main className="container mx-auto px-4 py-8">
+          <main>
             <Routes>
               <Route path="/" element={<PortalChoice />} />
               <Route path="/login" element={<Login />} />

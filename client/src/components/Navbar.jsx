@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Shield, LogOut, LayoutDashboard, User, Menu, X } from 'lucide-react';
@@ -19,12 +19,38 @@ const Navbar = () => {
     };
 
     const isGateway = location.pathname === '/';
+    const isAuthPage = location.pathname.includes('/login') || location.pathname.includes('/register');
     const isAdminPortal = location.pathname.includes('/admin');
     const isUserPortal = !isGateway && !isAdminPortal;
 
+    useEffect(() => {
+        if (!user) return;
+
+        // Condition to trigger back button interception - only on dashboards
+        const isDashboardPage = location.pathname === '/dashboard' || location.pathname === '/admin-dashboard';
+
+        if (isDashboardPage) {
+            // Push a fake state to the history stack to capture the back button event
+            window.history.pushState(null, '', window.location.href);
+
+            const handlePopState = (event) => {
+                // When back button is clicked, show confirmation modal
+                setIsLogoutConfirmOpen(true);
+                // Push the state again to keep the user on the current page while modal is open
+                window.history.pushState(null, '', window.location.href);
+            };
+
+            window.addEventListener('popstate', handlePopState);
+
+            return () => {
+                window.removeEventListener('popstate', handlePopState);
+            };
+        }
+    }, [user, location.pathname]);
+
     const NavLinks = () => (
         <>
-            {user ? (
+            {user && !isGateway && !isAuthPage ? (
                 <>
                     <div className="flex items-center gap-2 text-slate-600 px-4 py-2 bg-slate-50 md:bg-transparent rounded-xl md:rounded-none">
                         <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center border border-indigo-100">
@@ -38,25 +64,6 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    {user.role === 'admin' ? (
-                        <Link
-                            to="/admin-dashboard"
-                            onClick={() => setIsMenuOpen(false)}
-                            className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition-all font-medium px-4 md:px-0 py-2 md:py-0"
-                        >
-                            <LayoutDashboard size={18} />
-                            <span className="text-sm">Admin Panel</span>
-                        </Link>
-                    ) : (
-                        <Link
-                            to="/dashboard"
-                            onClick={() => setIsMenuOpen(false)}
-                            className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition-all font-medium px-4 md:px-0 py-2 md:py-0"
-                        >
-                            <LayoutDashboard size={18} />
-                            <span className="text-sm">Dashboard</span>
-                        </Link>
-                    )}
 
                     <button
                         onClick={() => setIsLogoutConfirmOpen(true)}
@@ -85,14 +92,16 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="glass sticky top-0 z-50">
+            <nav className="glass fixed top-0 left-0 right-0 z-50">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 text-xl font-extrabold text-slate-900 tracking-tighter">
-                        <Shield className="text-indigo-600 fill-indigo-50" size={28} />
-                        <span className="font-outfit">
-                            CMS <span className="text-indigo-600">Pro</span>
-                            {isUserPortal && <span className="ml-2 text-slate-400 text-[10px] sm:text-sm font-bold uppercase tracking-widest">User</span>}
-                            {isAdminPortal && <span className="ml-2 text-slate-400 text-[10px] sm:text-sm font-bold uppercase tracking-widest">Admin</span>}
+                    <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-2xl font-black text-slate-900 tracking-tight">
+                        <div className="relative">
+                            <Shield className="text-indigo-600 fill-indigo-50" size={32} strokeWidth={2.5} />
+                        </div>
+                        <span className="font-outfit flex items-baseline gap-2">
+                            <span>CMS <span className="text-indigo-600">Pro</span></span>
+                            {isUserPortal && <span className="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] font-sans">User</span>}
+                            {isAdminPortal && <span className="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] font-sans">Admin</span>}
                         </span>
                     </Link>
 

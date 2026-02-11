@@ -18,8 +18,8 @@ const AdminLogin = () => {
         try {
             const data = await login(email, password);
             if (data.user.role !== 'admin') {
-                logout(); // Clear the accidental user session
-                toast.error('Unauthorized: Standard users cannot access the Admin Portal');
+                logout();
+                toast.error('This is the Admin Portal. Regular users should login at the User Portal.');
                 return;
             }
             toast.success('Admin authenticated successfully');
@@ -32,7 +32,7 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="min-h-[85vh] flex items-center justify-center p-6 bg-slate-50/50">
+        <div className="container mx-auto px-4 min-h-[85vh] flex items-center justify-center py-20 bg-slate-50/50">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}

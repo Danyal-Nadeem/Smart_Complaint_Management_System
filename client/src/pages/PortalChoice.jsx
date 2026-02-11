@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const PortalChoice = () => {
     return (
-        <div className="min-h-[80vh] flex items-center justify-center p-6">
+        <div className="container mx-auto px-4 min-h-[80vh] flex items-center justify-center py-16 pt-32">
             <div className="max-w-3xl w-full">
                 <div className="text-center mb-12">
                     <motion.h1

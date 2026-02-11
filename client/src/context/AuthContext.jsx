@@ -42,8 +42,12 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (name, email, password, role = 'user') => {
         const { data } = await axios.post('http://localhost:5000/api/auth/register', { name, email, password, role });
-        localStorage.setItem('token', data.token);
-        setUser(data.user);
+
+        // Only set token and user if account is not pending (i.e. if token is provided)
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+            setUser(data.user);
+        }
         return data;
     };
 

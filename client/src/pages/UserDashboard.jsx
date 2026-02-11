@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PlusCircle, List, Clock, CheckCircle, XCircle, FileText, Send, Filter, AlertTriangle } from 'lucide-react';
+import { PlusCircle, List, Clock, CheckCircle, XCircle, FileText, Send, Filter, AlertTriangle, Shield, Menu, X } from 'lucide-react';
 import { clsx } from 'clsx';
+import UserSidebar from '../components/UserSidebar';
 
 const UserDashboard = () => {
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [filter, setFilter] = useState('All');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [activeSection, setActiveSection] = useState('dashboard');
 
     // Form State
     const [formData, setFormData] = useState({
@@ -62,187 +65,232 @@ const UserDashboard = () => {
         ? complaints
         : complaints.filter(c => c.status === filter);
 
+    const handleNavigate = (section) => {
+        setActiveSection(section);
+
+        let targetId = section;
+        if (section === 'submit') {
+            setIsFormOpen(true);
+            targetId = 'new-complaint';
+        } else if (section === 'complaints') {
+            targetId = 'my-complaints';
+        }
+
+        // Delay scroll slightly to allow the form to open if needed
+        setTimeout(() => {
+            const element = document.getElementById(targetId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    };
+
     return (
-        <div className="max-w-6xl mx-auto space-y-10 px-4 sm:px-6 lg:px-8 py-10">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                    <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">Your Complaints</h1>
-                    <p className="text-slate-500 mt-2 font-medium">Submit new complaints and track their resolution status in real-time.</p>
-                </div>
-                <button
-                    onClick={() => setIsFormOpen(!isFormOpen)}
-                    className="flex items-center gap-2 premium-gradient px-8 py-3.5 rounded-2xl font-bold text-white shadow-xl shadow-indigo-200 hover:scale-[1.02] active:scale-95 transition-all"
-                >
-                    <PlusCircle size={22} />
-                    Submit Complaint
-                </button>
-            </div>
+        <div className="flex min-h-screen w-full bg-slate-50">
+            {/* Sidebar */}
+            <UserSidebar
+                complaints={complaints}
+                activeSection={activeSection}
+                onNavigate={handleNavigate}
+                isMobileOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+            />
 
-            <AnimatePresence>
-                {isFormOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="overflow-hidden"
+            {/* Main Content */}
+            <div className="flex-1 w-full lg:pl-8" style={{ marginLeft: '288px' }}>
+                {/* Mobile Menu Toggle */}
+                <div className="lg:hidden sticky top-16 z-30 bg-white border-b border-slate-100 px-4 py-3">
+                    <button
+                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                        className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 font-bold transition-colors"
                     >
-                        <form onSubmit={handleSubmit} className="premium-card p-6 sm:p-10 grid md:grid-cols-2 gap-8 mb-10">
-                            <div className="md:col-span-2 flex items-center justify-between mb-2">
-                                <h2 className="text-2xl font-bold font-outfit text-slate-900 flex items-center gap-3">
-                                    <div className="p-2 bg-indigo-50 rounded-xl">
-                                        <FileText className="text-indigo-600" size={24} />
-                                    </div>
-                                    New Complaint Details
-                                </h2>
-                                <button type="button" onClick={() => setIsFormOpen(false)} className="text-slate-400 hover:text-red-500 font-bold transition-colors">Cancel</button>
-                            </div>
-
-                            <div className="space-y-2.5">
-                                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Complaint Title</label>
-                                <div className="relative group">
-                                    <input
-                                        type="text" required
-                                        className="input-field pl-5"
-                                        placeholder="e.g. WiFi issue in Hostel Wing B"
-                                        value={formData.title}
-                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-5">
-                                <div className="space-y-2.5">
-                                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Category</label>
-                                    <select
-                                        className="input-field pl-5 appearance-none"
-                                        value={formData.category}
-                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                    >
-                                        <option>General</option>
-                                        <option>Technical</option>
-                                        <option>Hostel</option>
-                                        <option>Academic</option>
-                                        <option>Other</option>
-                                    </select>
-                                </div>
-                                <div className="space-y-2.5">
-                                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Priority</label>
-                                    <select
-                                        className="input-field pl-5 appearance-none"
-                                        value={formData.priority}
-                                        onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                                    >
-                                        <option>Low</option>
-                                        <option>Medium</option>
-                                        <option>High</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="md:col-span-2 space-y-2.5">
-                                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Description</label>
-                                <textarea
-                                    required rows="5"
-                                    className="input-field pl-5 resize-none h-40"
-                                    placeholder="Provide detailed information about your issue..."
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                ></textarea>
-                            </div>
-
-                            <div className="md:col-span-2 flex justify-end">
-                                <button type="submit" className="premium-gradient px-12 py-4 rounded-2xl font-extrabold text-white flex items-center gap-3 premium-shadow hover:opacity-95 transition-all active:scale-95">
-                                    <Send size={20} />
-                                    Submit Ticket
-                                </button>
-                            </div>
-                        </form>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            <div className="space-y-8">
-                <div className="flex items-center gap-4 border-b border-slate-100 pb-5 overflow-x-auto scrollbar-hide">
-                    <div className="bg-slate-100 p-2 rounded-xl">
-                        <Filter size={18} className="text-slate-500 shrink-0" />
-                    </div>
-                    {['All', 'Pending', 'In Progress', 'Resolved', 'Rejected'].map(status => (
-                        <button
-                            key={status}
-                            onClick={() => setFilter(status)}
-                            className={clsx(
-                                "px-6 py-2 rounded-2xl text-sm font-bold whitespace-nowrap transition-all",
-                                filter === status
-                                    ? "bg-white text-indigo-600 border border-indigo-100 shadow-sm shadow-indigo-100/50 scale-105"
-                                    : "text-slate-500 hover:text-slate-900 border border-transparent"
-                            )}
-                        >
-                            {status}
-                        </button>
-                    ))}
+                        {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+                        <span className="text-sm">{isSidebarOpen ? 'Close Menu' : 'Open Menu'}</span>
+                    </button>
                 </div>
 
-                {loading ? (
-                    <div className="flex justify-center py-20">
-                        <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-100 border-t-indigo-600"></div>
-                    </div>
-                ) : filteredComplaints.length === 0 ? (
-                    <div className="premium-card p-20 flex flex-col items-center justify-center text-center">
-                        <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
-                            <List className="text-slate-300" size={40} />
+                <div className="w-full space-y-10 pr-4 lg:pr-8 py-10 pt-24">
+                    <div id="dashboard" className="flex flex-col md:flex-row md:items-center justify-between gap-6 scroll-mt-24">
+                        <div>
+                            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">Your Complaints</h1>
+                            <p className="text-slate-500 mt-2 font-medium">Submit new complaints and track their resolution status in real-time.</p>
                         </div>
-                        <h3 className="text-2xl font-bold font-outfit text-slate-900">No complaints found</h3>
-                        <p className="text-slate-500 mt-2 max-w-xs font-medium">You haven't submitted any complaints matching this filter yet.</p>
+                        <button
+                            onClick={() => setIsFormOpen(!isFormOpen)}
+                            className="flex items-center gap-2 premium-gradient px-8 py-3.5 rounded-2xl font-bold text-white shadow-xl shadow-indigo-200 hover:scale-[1.02] active:scale-95 transition-all"
+                        >
+                            <PlusCircle size={22} />
+                            Submit Complaint
+                        </button>
                     </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {filteredComplaints.map((complaint) => (
+
+                    <AnimatePresence>
+                        {isFormOpen && (
                             <motion.div
-                                layout
-                                key={complaint._id}
-                                className="premium-card p-8 group relative overflow-hidden"
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="overflow-hidden"
                             >
-                                <div className="absolute top-0 right-0 p-5 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
-                                    <Shield size={80} className="text-indigo-600" />
-                                </div>
-                                <div className="flex justify-between items-start mb-6">
-                                    <span className={clsx(
-                                        "px-3 py-1 rounded-xl text-[10px] uppercase font-black tracking-widest border",
-                                        complaint.priority === 'High' ? "bg-red-50 text-red-600 border-red-100" :
-                                            complaint.priority === 'Medium' ? "bg-amber-50 text-amber-600 border-amber-100" : "bg-emerald-50 text-emerald-600 border-emerald-100"
-                                    )}>
-                                        {complaint.priority}
-                                    </span>
-                                    <div className="flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-xl bg-white border border-slate-100 shadow-sm shadow-slate-100/50">
-                                        {statusIcons[complaint.status]}
-                                        <span className="text-slate-700 uppercase tracking-tighter">{complaint.status}</span>
+                                <form id="new-complaint" onSubmit={handleSubmit} className="premium-card p-6 sm:p-10 grid md:grid-cols-2 gap-8 mb-10 scroll-mt-24">
+                                    <div className="md:col-span-2 flex items-center justify-between mb-2">
+                                        <h2 className="text-2xl font-bold font-outfit text-slate-900 flex items-center gap-3">
+                                            <div className="p-2 bg-indigo-50 rounded-xl">
+                                                <FileText className="text-indigo-600" size={24} />
+                                            </div>
+                                            New Complaint Details
+                                        </h2>
+                                        <button type="button" onClick={() => setIsFormOpen(false)} className="text-slate-400 hover:text-red-500 font-bold transition-colors">Cancel</button>
                                     </div>
-                                </div>
 
-                                <h3 className="text-xl font-extrabold mb-3 line-clamp-1 group-hover:text-indigo-600 transition-colors uppercase tracking-tight font-outfit text-slate-900">{complaint.title}</h3>
-                                <p className="text-slate-500 text-sm mb-6 line-clamp-3 leading-relaxed font-medium">{complaint.description}</p>
-
-                                <div className="flex items-center justify-between pt-5 border-t border-slate-50">
-                                    <div className="flex items-center gap-2 text-xs text-slate-400 font-bold">
-                                        <Clock size={14} />
-                                        {new Date(complaint.createdAt).toLocaleDateString()}
-                                    </div>
-                                    <span className="text-[11px] font-black px-3 py-1.5 bg-indigo-50/50 rounded-xl text-indigo-600 border border-indigo-50 uppercase tracking-widest">{complaint.category}</span>
-                                </div>
-
-                                {complaint.resolution && (
-                                    <div className="mt-5 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 shadow-inner">
-                                        <div className="flex items-center gap-2 mb-1.5">
-                                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                            <p className="text-[11px] font-black text-emerald-600 uppercase tracking-[0.1em]">Official Response</p>
+                                    <div className="space-y-2.5">
+                                        <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Complaint Title</label>
+                                        <div className="relative group">
+                                            <input
+                                                type="text" required
+                                                className="input-field pl-5"
+                                                placeholder="e.g. WiFi issue in Hostel Wing B"
+                                                value={formData.title}
+                                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                            />
                                         </div>
-                                        <p className="text-xs text-emerald-700 font-medium leading-relaxed italic">"{complaint.resolution}"</p>
                                     </div>
-                                )}
+
+                                    <div className="grid grid-cols-2 gap-5">
+                                        <div className="space-y-2.5">
+                                            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Category</label>
+                                            <select
+                                                className="input-field pl-5 appearance-none"
+                                                value={formData.category}
+                                                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                            >
+                                                <option>General</option>
+                                                <option>Technical</option>
+                                                <option>Hostel</option>
+                                                <option>Academic</option>
+                                                <option>Other</option>
+                                            </select>
+                                        </div>
+                                        <div className="space-y-2.5">
+                                            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Priority</label>
+                                            <select
+                                                className="input-field pl-5 appearance-none"
+                                                value={formData.priority}
+                                                onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                                            >
+                                                <option>Low</option>
+                                                <option>Medium</option>
+                                                <option>High</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="md:col-span-2 space-y-2.5">
+                                        <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                                        <textarea
+                                            required rows="5"
+                                            className="input-field pl-5 resize-none h-40"
+                                            placeholder="Provide detailed information about your issue..."
+                                            value={formData.description}
+                                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        ></textarea>
+                                    </div>
+
+                                    <div className="md:col-span-2 flex justify-end">
+                                        <button type="submit" className="premium-gradient px-12 py-4 rounded-2xl font-extrabold text-white flex items-center gap-3 premium-shadow hover:opacity-95 transition-all active:scale-95">
+                                            <Send size={20} />
+                                            Submit Ticket
+                                        </button>
+                                    </div>
+                                </form>
                             </motion.div>
-                        ))}
+                        )}
+                    </AnimatePresence>
+
+                    <div id="my-complaints" className="space-y-8 scroll-mt-24">
+                        <div className="flex items-center gap-4 border-b border-slate-100 pb-5 overflow-x-auto scrollbar-hide">
+                            <div className="bg-slate-100 p-2 rounded-xl">
+                                <Filter size={18} className="text-slate-500 shrink-0" />
+                            </div>
+                            {['All', 'Pending', 'In Progress', 'Resolved', 'Rejected'].map(status => (
+                                <button
+                                    key={status}
+                                    onClick={() => setFilter(status)}
+                                    className={clsx(
+                                        "px-6 py-2 rounded-2xl text-sm font-bold whitespace-nowrap transition-all",
+                                        filter === status
+                                            ? "bg-white text-indigo-600 border border-indigo-100 shadow-sm shadow-indigo-100/50 scale-105"
+                                            : "text-slate-500 hover:text-slate-900 border border-transparent"
+                                    )}
+                                >
+                                    {status}
+                                </button>
+                            ))}
+                        </div>
+
+                        {loading ? (
+                            <div className="flex justify-center py-20">
+                                <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-100 border-t-indigo-600"></div>
+                            </div>
+                        ) : filteredComplaints.length === 0 ? (
+                            <div className="premium-card p-20 flex flex-col items-center justify-center text-center">
+                                <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
+                                    <List className="text-slate-300" size={40} />
+                                </div>
+                                <h3 className="text-2xl font-bold font-outfit text-slate-900">No complaints found</h3>
+                                <p className="text-slate-500 mt-2 max-w-xs font-medium">You haven't submitted any complaints matching this filter yet.</p>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {filteredComplaints.map((complaint) => (
+                                    <motion.div
+                                        layout
+                                        key={complaint._id}
+                                        className="premium-card p-8 group relative overflow-hidden"
+                                    >
+                                        <div className="absolute top-0 right-0 p-5 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+                                            <Shield size={80} className="text-indigo-600" />
+                                        </div>
+                                        <div className="flex justify-between items-start mb-6">
+                                            <span className={clsx(
+                                                "px-3 py-1 rounded-xl text-[10px] uppercase font-black tracking-widest border",
+                                                complaint.priority === 'High' ? "bg-red-50 text-red-600 border-red-100" :
+                                                    complaint.priority === 'Medium' ? "bg-amber-50 text-amber-600 border-amber-100" : "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                            )}>
+                                                {complaint.priority}
+                                            </span>
+                                            <div className="flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-xl bg-white border border-slate-100 shadow-sm shadow-slate-100/50">
+                                                {statusIcons[complaint.status]}
+                                                <span className="text-slate-700 uppercase tracking-tighter">{complaint.status}</span>
+                                            </div>
+                                        </div>
+
+                                        <h3 className="text-xl font-extrabold mb-3 line-clamp-1 group-hover:text-indigo-600 transition-colors uppercase tracking-tight font-outfit text-slate-900">{complaint.title}</h3>
+                                        <p className="text-slate-500 text-sm mb-6 line-clamp-3 leading-relaxed font-medium">{complaint.description}</p>
+
+                                        <div className="flex items-center justify-between pt-5 border-t border-slate-50">
+                                            <div className="flex items-center gap-2 text-xs text-slate-400 font-bold">
+                                                <Clock size={14} />
+                                                {new Date(complaint.createdAt).toLocaleDateString()}
+                                            </div>
+                                            <span className="text-[11px] font-black px-3 py-1.5 bg-indigo-50/50 rounded-xl text-indigo-600 border border-indigo-50 uppercase tracking-widest">{complaint.category}</span>
+                                        </div>
+
+                                        {complaint.resolution && (
+                                            <div className="mt-5 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 shadow-inner">
+                                                <div className="flex items-center gap-2 mb-1.5">
+                                                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                                                    <p className="text-[11px] font-black text-emerald-600 uppercase tracking-[0.1em]">Official Response</p>
+                                                </div>
+                                                <p className="text-xs text-emerald-700 font-medium leading-relaxed italic">"{complaint.resolution}"</p>
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );

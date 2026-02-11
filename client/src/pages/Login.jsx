@@ -20,8 +20,8 @@ const Login = () => {
         try {
             const data = await login(email, password);
             if (data.user.role === 'admin') {
-                logout(); // Clear the accidental admin session
-                setError('Administrators must use the Admin Portal to sign in.');
+                logout();
+                setError('This is the User Portal. Administrators should login at the Admin Portal.');
                 return;
             }
             navigate('/dashboard');
@@ -33,7 +33,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[85vh] p-6">
+        <div className="container mx-auto px-4 flex items-center justify-center min-h-[85vh] py-20">
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
