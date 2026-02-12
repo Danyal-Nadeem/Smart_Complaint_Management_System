@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { motion } from 'framer-motion';
-import { Home, List, Mail, BarChart3, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Home, List, Mail, BarChart3, Clock, CheckCircle, AlertTriangle, ChevronDown, UserCircle, Edit2 } from 'lucide-react';
 import { clsx } from 'clsx';
+import ProfileModal from './ProfileModal';
 
 const AdminSidebar = ({ complaints, activeSection, onNavigate, isMobileOpen, onClose }) => {
     const { user } = useAuth();
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [profileModal, setProfileModal] = useState({ isOpen: false, view: 'view' });
 
     // Calculate stats
+    // ... (rest of stats calculation stays the same)
     const totalComplaints = complaints.length;
     const pendingComplaints = complaints.filter(c => c.status === 'Pending').length;
     const resolvedComplaints = complaints.filter(c => c.status === 'Resolved').length;
@@ -48,18 +52,58 @@ const AdminSidebar = ({ complaints, activeSection, onNavigate, isMobileOpen, onC
             >
                 <div className="space-y-8 p-6">
                     {/* Admin Profile Section */}
-                    <div className="premium-card p-6 text-center bg-slate-900 border-none">
-                        <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-slate-200/10 border border-slate-700">
-                            {user?.name?.charAt(0).toUpperCase()}
-                        </div>
-                        <h3 className="text-lg font-extrabold text-white font-outfit mb-1">{user?.name}</h3>
-                        <div className="flex items-center justify-center gap-2 text-slate-400 text-xs mb-3">
-                            <Mail size={12} />
-                            <span className="truncate">{user?.email}</span>
-                        </div>
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-400 text-[10px] font-black uppercase tracking-wider border border-indigo-500/20">
-                            {user?.role} Portal
-                        </span>
+                    <div className="relative">
+                        <button
+                            onClick={() => setIsProfileOpen(!isProfileOpen)}
+                            className="w-full premium-card p-6 text-center bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200/50 hover:border-indigo-200 transition-all group relative"
+                        >
+                            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-600 text-2xl font-black shadow-sm border border-slate-200 group-hover:scale-105 transition-transform">
+                                {user?.name?.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="flex items-center justify-center gap-2 mb-1">
+                                <h3 className="text-lg font-extrabold text-slate-900 font-outfit">{user?.name}</h3>
+                                <ChevronDown size={14} className={clsx("text-slate-400 transition-transform", isProfileOpen && "rotate-180")} />
+                            </div>
+                            <div className="flex items-center justify-center gap-2 text-slate-500 text-xs mb-3">
+                                <Mail size={12} />
+                                <span className="truncate">{user?.email}</span>
+                            </div>
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-slate-900/10 text-slate-900 text-[10px] font-black uppercase tracking-wider border border-slate-900/10">
+                                {user?.role} Portal
+                            </span>
+                        </button>
+
+                        <AnimatePresence>
+                            {isProfileOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                                    className="absolute left-0 right-0 mt-2 bg-white rounded-2xl premium-shadow border border-slate-100 overflow-hidden z-[50]"
+                                >
+                                    <div className="p-2 space-y-1">
+                                        <button
+                                            onClick={() => {
+                                                setProfileModal({ isOpen: true, view: 'view' });
+                                                setIsProfileOpen(false);
+                                            }}
+                                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all text-left"
+                                        >
+                                            <UserCircle size={18} /> View Profile
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setProfileModal({ isOpen: true, view: 'edit' });
+                                                setIsProfileOpen(false);
+                                            }}
+                                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all text-left"
+                                        >
+                                            <Edit2 size={18} /> Edit Name
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
 
                     {/* Navigation Menu */}
@@ -118,6 +162,13 @@ const AdminSidebar = ({ complaints, activeSection, onNavigate, isMobileOpen, onC
                     </div>
                 </div>
             </aside>
+
+            {/* Profile Modal */}
+            <ProfileModal
+                isOpen={profileModal.isOpen}
+                onClose={() => setProfileModal({ ...profileModal, isOpen: false })}
+                initialView={profileModal.view}
+            />
         </>
     );
 };

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Shield, LogOut, LayoutDashboard, User, Menu, X } from 'lucide-react';
+import { Shield, LogOut, LayoutDashboard, User, Menu, X, ChevronDown, Edit2, UserCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { clsx } from 'clsx';
+import ProfileModal from './ProfileModal';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -10,11 +12,14 @@ const Navbar = () => {
     const location = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [profileModal, setProfileModal] = useState({ isOpen: false, view: 'view' });
 
     const handleLogout = () => {
         logout();
         setIsLogoutConfirmOpen(false);
         setIsMenuOpen(false);
+        setIsProfileOpen(false);
         navigate('/');
     };
 
@@ -52,26 +57,65 @@ const Navbar = () => {
         <>
             {user && !isGateway && !isAuthPage ? (
                 <>
-                    <div className="flex items-center gap-2 text-slate-600 px-4 py-2 bg-slate-50 md:bg-transparent rounded-xl md:rounded-none">
-                        <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center border border-indigo-100">
-                            <User size={16} className="text-indigo-600" />
-                        </div>
-                        <div className="flex flex-col md:flex-row md:items-center md:gap-2">
-                            <span className="text-sm font-semibold">{user.name}</span>
-                            <span className="text-[10px] w-fit px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border border-slate-200">
-                                {user.role}
-                            </span>
-                        </div>
+                    <div className="relative">
+                        <button
+                            onClick={() => setIsProfileOpen(!isProfileOpen)}
+                            className="flex items-center gap-2 text-slate-600 px-4 py-2 hover:bg-slate-50 md:bg-transparent rounded-xl transition-all group"
+                        >
+                            <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center border border-indigo-100 group-hover:border-indigo-200 transition-colors">
+                                <User size={16} className="text-indigo-600" />
+                            </div>
+                            <div className="flex flex-col text-left">
+                                <span className="text-sm font-bold leading-none mb-0.5">{user.name}</span>
+                                <span className="text-[10px] w-fit px-1.5 py-0 rounded-full bg-slate-100 text-slate-500 font-bold uppercase tracking-wider border border-slate-200 leading-tight">
+                                    {user.role}
+                                </span>
+                            </div>
+                            <ChevronDown size={14} className={clsx("text-slate-400 transition-transform", isProfileOpen && "rotate-180")} />
+                        </button>
+
+                        <AnimatePresence>
+                            {isProfileOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    className="absolute right-0 mt-2 w-48 bg-white rounded-2xl premium-shadow border border-slate-100 overflow-hidden z-[60]"
+                                >
+                                    <div className="p-2 space-y-1">
+                                        <button
+                                            onClick={() => {
+                                                setProfileModal({ isOpen: true, view: 'view' });
+                                                setIsProfileOpen(false);
+                                            }}
+                                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all"
+                                        >
+                                            <UserCircle size={18} /> View Profile
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setProfileModal({ isOpen: true, view: 'edit' });
+                                                setIsProfileOpen(false);
+                                            }}
+                                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all"
+                                        >
+                                            <Edit2 size={18} /> Edit Name
+                                        </button>
+                                        <div className="h-px bg-slate-100 mx-2 !my-1" />
+                                        <button
+                                            onClick={() => {
+                                                setIsLogoutConfirmOpen(true);
+                                                setIsProfileOpen(false);
+                                            }}
+                                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-all"
+                                        >
+                                            <LogOut size={18} /> Sign Out
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
-
-
-                    <button
-                        onClick={() => setIsLogoutConfirmOpen(true)}
-                        className="flex items-center gap-1.5 text-slate-400 hover:text-red-500 transition-all font-medium px-4 md:px-0 py-2 md:py-0"
-                    >
-                        <LogOut size={18} />
-                        <span className="text-sm">Sign Out</span>
-                    </button>
                 </>
             ) : (
                 !isGateway && (
@@ -178,6 +222,13 @@ const Navbar = () => {
                     </div>
                 )}
             </AnimatePresence>
+
+            {/* Profile Modal */}
+            <ProfileModal
+                isOpen={profileModal.isOpen}
+                onClose={() => setProfileModal({ ...profileModal, isOpen: false })}
+                initialView={profileModal.view}
+            />
         </>
     );
 };

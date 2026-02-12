@@ -178,6 +178,40 @@ exports.approveUser = async (req, res) => {
     }
 };
 
+// @desc    Update user profile (name only)
+// @route   PUT /api/auth/update-profile
+// @access  Private
+exports.updateProfile = async (req, res) => {
+    try {
+        const { name } = req.body;
+
+        if (!name) {
+            return res.status(400).json({ message: 'Please provide a name' });
+        }
+
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.name = name;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            data: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
 // @desc    Get current logged in user
 // @route   GET /api/auth/me
 // @access  Private
