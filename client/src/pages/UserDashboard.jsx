@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PlusCircle, List, Clock, CheckCircle, XCircle, FileText, Send, Filter, AlertTriangle, Shield, Menu, X } from 'lucide-react';
+import { PlusCircle, List, Clock, CheckCircle, XCircle, FileText, Send, Filter, AlertTriangle, Shield, Menu, X, Trash2, Pencil } from 'lucide-react';
 import { clsx } from 'clsx';
 import UserSidebar from '../components/UserSidebar';
+import toast from 'react-hot-toast';
 
 const UserDashboard = () => {
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
+    const [editingComplaint, setEditingComplaint] = useState(null);
     const [filter, setFilter] = useState('All');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('dashboard');
@@ -27,7 +29,7 @@ const UserDashboard = () => {
 
     const fetchComplaints = async () => {
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             const { data } = await axios.get('http://localhost:5000/api/complaints', {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -42,16 +44,61 @@ const UserDashboard = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            await axios.post('http://localhost:5000/api/complaints', formData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const token = sessionStorage.getItem('token');
+            if (editingComplaint) {
+                await axios.put(`http://localhost:5000/api/complaints/${editingComplaint._id}/update`, formData, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                toast.success('Complaint updated successfully');
+            } else {
+                await axios.post('http://localhost:5000/api/complaints', formData, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                toast.success('Complaint submitted successfully');
+            }
             setIsFormOpen(false);
+            setEditingComplaint(null);
             setFormData({ title: '', category: 'General', priority: 'Medium', description: '' });
             fetchComplaints();
         } catch (error) {
-            alert('Failed to submit complaint');
+            toast.error(error.response?.data?.message || 'Action failed');
         }
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this complaint?')) return;
+        try {
+            const token = sessionStorage.getItem('token');
+            await axios.delete(`http://localhost:5000/api/complaints/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success('Complaint deleted');
+            fetchComplaints();
+        } catch (error) {
+            toast.error('Failed to delete complaint');
+        }
+    };
+
+    const handleEdit = (complaint) => {
+        if (complaint.status !== 'Pending') {
+            toast.error('Only pending complaints can be edited');
+            return;
+        }
+        setEditingComplaint(complaint);
+        setFormData({
+            title: complaint.title,
+            category: complaint.category,
+            priority: complaint.priority,
+            description: complaint.description
+        });
+        setIsFormOpen(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleCancelEdit = () => {
+        setEditingComplaint(null);
+        setFormData({ title: '', category: 'General', priority: 'Medium', description: '' });
+        setIsFormOpen(false);
     };
 
     const statusIcons = {
@@ -136,11 +183,11 @@ const UserDashboard = () => {
                                     <div className="md:col-span-2 flex items-center justify-between mb-2">
                                         <h2 className="text-2xl font-bold font-outfit text-slate-900 flex items-center gap-3">
                                             <div className="p-2 bg-indigo-50 rounded-xl">
-                                                <FileText className="text-indigo-600" size={24} />
+                                                {editingComplaint ? <Pencil className="text-indigo-600" size={24} /> : <FileText className="text-indigo-600" size={24} />}
                                             </div>
-                                            New Complaint Details
+                                            {editingComplaint ? 'Update Complaint' : 'New Complaint Details'}
                                         </h2>
-                                        <button type="button" onClick={() => setIsFormOpen(false)} className="text-slate-400 hover:text-red-500 font-bold transition-colors">Cancel</button>
+                                        <button type="button" onClick={handleCancelEdit} className="text-slate-400 hover:text-red-500 font-bold transition-colors">Cancel</button>
                                     </div>
 
                                     <div className="space-y-2.5">
@@ -198,8 +245,8 @@ const UserDashboard = () => {
 
                                     <div className="md:col-span-2 flex justify-end">
                                         <button type="submit" className="premium-gradient px-12 py-4 rounded-2xl font-extrabold text-white flex items-center gap-3 premium-shadow hover:opacity-95 transition-all active:scale-95">
-                                            <Send size={20} />
-                                            Submit Ticket
+                                            {editingComplaint ? <CheckCircle size={20} /> : <Send size={20} />}
+                                            {editingComplaint ? 'Update Ticket' : 'Submit Ticket'}
                                         </button>
                                     </div>
                                 </form>
@@ -259,9 +306,27 @@ const UserDashboard = () => {
                                             )}>
                                                 {complaint.priority}
                                             </span>
-                                            <div className="flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-xl bg-white border border-slate-100 shadow-sm shadow-slate-100/50">
-                                                {statusIcons[complaint.status]}
-                                                <span className="text-slate-700 uppercase tracking-tighter">{complaint.status}</span>
+                                            <div className="flex items-center gap-2">
+                                                {complaint.status === 'Pending' && (
+                                                    <button
+                                                        onClick={() => handleEdit(complaint)}
+                                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                                                        title="Edit Complaint"
+                                                    >
+                                                        <Pencil size={18} />
+                                                    </button>
+                                                )}
+                                                <button
+                                                    onClick={() => handleDelete(complaint._id)}
+                                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                                                    title="Delete Complaint"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                                <div className="flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-xl bg-white border border-slate-100 shadow-sm shadow-slate-100/50">
+                                                    {statusIcons[complaint.status]}
+                                                    <span className="text-slate-700 uppercase tracking-tighter whitespace-nowrap">{complaint.status}</span>
+                                                </div>
                                             </div>
                                         </div>
 

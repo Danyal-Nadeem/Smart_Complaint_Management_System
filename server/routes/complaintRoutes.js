@@ -4,6 +4,8 @@ const {
     getComplaint,
     createComplaint,
     updateComplaintStatus,
+    updateComplaint,
+    deleteComplaint,
     getStats
 } = require('../controllers/complaintController');
 
@@ -21,6 +23,9 @@ router.get('/stats', authorize('admin'), getStats);
 
 router.route('/:id')
     .get(getComplaint)
-    .put(authorize('admin'), updateComplaintStatus);
+    .put(authorize('admin'), updateComplaintStatus)
+    .delete(deleteComplaint);
+
+router.put('/:id/update', updateComplaint);
 
 module.exports = router;

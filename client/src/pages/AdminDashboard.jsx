@@ -63,7 +63,7 @@ const AdminDashboard = () => {
 
     const fetchAdminData = async () => {
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             const config = { headers: { Authorization: `Bearer ${token}` } };
 
             const [complaintsRes, statsRes] = await Promise.all([
@@ -82,7 +82,7 @@ const AdminDashboard = () => {
 
     const handleUpdate = async (id) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             await axios.put(`http://localhost:5000/api/complaints/${id}`, updateForm, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -367,7 +367,7 @@ const AdminDashboard = () => {
                                                     </select>
                                                 ) : (
                                                     <span className={clsx(
-                                                        "text-[10px] font-black px-4 py-2 rounded-xl border uppercase tracking-widest shadow-sm shadow-slate-100/50",
+                                                        "text-[10px] font-black px-4 py-2 rounded-xl border uppercase tracking-widest shadow-sm shadow-slate-100/50 whitespace-nowrap",
                                                         c.status === 'Pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                                             c.status === 'In Progress' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
                                                                 c.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :

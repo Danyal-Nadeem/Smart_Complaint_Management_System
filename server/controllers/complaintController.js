@@ -144,3 +144,71 @@ exports.getStats = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+
+// @desc    Update complaint content
+// @route   PUT /api/complaints/:id/update
+// @access  Private
+exports.updateComplaint = async (req, res) => {
+    try {
+        let complaint = await Complaint.findById(req.params.id);
+
+        if (!complaint) {
+            return res.status(404).json({ message: 'Complaint not found' });
+        }
+
+        // Make sure user is complaint owner
+        if (complaint.user.toString() !== req.user.id) {
+            return res.status(401).json({ message: 'Not authorized to update this complaint' });
+        }
+
+        // Only allow updates if status is Pending
+        if (complaint.status !== 'Pending') {
+            return res.status(400).json({ message: 'Cannot update a complaint that is already being processed' });
+        }
+
+        const { title, description, category, priority } = req.body;
+
+        complaint = await Complaint.findByIdAndUpdate(
+            req.params.id,
+            { title, description, category, priority },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        res.status(200).json({
+            success: true,
+            data: complaint
+        });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
+// @desc    Delete complaint
+// @route   DELETE /api/complaints/:id
+// @access  Private
+exports.deleteComplaint = async (req, res) => {
+    try {
+        const complaint = await Complaint.findById(req.params.id);
+
+        if (!complaint) {
+            return res.status(404).json({ message: 'Complaint not found' });
+        }
+
+        // Make sure user is complaint owner or admin
+        if (complaint.user.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(401).json({ message: 'Not authorized to delete this complaint' });
+        }
+
+        await complaint.deleteOne();
+
+        res.status(200).json({
+            success: true,
+            data: {}
+        });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};

@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (token) {
             fetchUser(token);
         } else {
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
             const { data } = await axios.get('http://localhost:5000/api/auth/me', config);
             setUser(data.data);
         } catch (error) {
-            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
             setUser(null);
         } finally {
             setLoading(false);
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-        localStorage.setItem('token', data.token);
+        sessionStorage.setItem('token', data.token);
         setUser(data.user);
         return data;
     };
@@ -45,14 +45,14 @@ export const AuthProvider = ({ children }) => {
 
         // Only set token and user if account is not pending (i.e. if token is provided)
         if (data.token) {
-            localStorage.setItem('token', data.token);
+            sessionStorage.setItem('token', data.token);
             setUser(data.user);
         }
         return data;
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
         setUser(null);
     };
 
