@@ -207,7 +207,7 @@ const UserDashboard = () => {
                                         <div className="space-y-2.5">
                                             <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Category</label>
                                             <select
-                                                className="input-field pl-5 appearance-none"
+                                                className="input-field px-0 text-center appearance-none"
                                                 value={formData.category}
                                                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                                             >
@@ -221,7 +221,7 @@ const UserDashboard = () => {
                                         <div className="space-y-2.5">
                                             <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Priority</label>
                                             <select
-                                                className="input-field pl-5 appearance-none"
+                                                className="input-field px-0 text-center appearance-none"
                                                 value={formData.priority}
                                                 onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
                                             >

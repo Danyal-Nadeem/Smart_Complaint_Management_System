@@ -28,6 +28,7 @@ const AdminDashboard = () => {
     const [isSystemOnline, setIsSystemOnline] = useState(true);
     const [selectedComplaint, setSelectedComplaint] = useState(null);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [sortBy, setSortBy] = useState('latest'); // 'latest', 'oldest', 'priority-desc', 'priority-asc'
 
     // Process complaints data for the weekly analytics sparkline
     const processAnalyticsData = (allComplaints) => {
@@ -105,12 +106,37 @@ const AdminDashboard = () => {
 
     const COLORS = ['#0ea5e9', '#6366f1', '#f59e0b', '#ef4444', '#10b981'];
 
+    const filteredComplaints = useMemo(() => {
+        let result = (complaints || []).filter(c =>
+            (c.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (c.user?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        // Sorting logic
+        const priorityWeights = { 'High': 3, 'Medium': 2, 'Low': 1 };
+
+        switch (sortBy) {
+            case 'latest':
+                result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                break;
+            case 'oldest':
+                result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                break;
+            case 'priority-desc':
+                result.sort((a, b) => (priorityWeights[b.priority] || 0) - (priorityWeights[a.priority] || 0));
+                break;
+            case 'priority-asc':
+                result.sort((a, b) => (priorityWeights[a.priority] || 0) - (priorityWeights[b.priority] || 0));
+                break;
+            default:
+                break;
+        }
+
+        return result;
+    }, [complaints, searchTerm, sortBy]);
+
     if (loading) return <div className="flex justify-center items-center h-[60vh] animate-pulse text-blue-500">Loading Dashboard...</div>;
 
-    const filteredComplaints = complaints.filter(c =>
-        c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.user?.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
     return (
         <div className="flex min-h-screen w-full bg-slate-50">
@@ -306,15 +332,30 @@ const AdminDashboard = () => {
                                 <h3 className="text-2xl font-black text-slate-900 font-outfit tracking-tight">Manage Complaints</h3>
                                 <p className="text-slate-500 text-sm font-medium mt-1">Update status and provide resolutions.</p>
                             </div>
-                            <div className="relative group">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" size={18} />
-                                <input
-                                    type="text"
-                                    className="input-field pl-12 w-full md:w-80"
-                                    placeholder="Search user or title..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
+                            <div className="flex flex-col sm:flex-row items-center gap-4">
+                                <div className="relative group w-full md:w-80">
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" size={18} />
+                                    <input
+                                        type="text"
+                                        className="input-field pl-12 w-full"
+                                        placeholder="Search user or title..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                </div>
+                                <div className="flex items-center gap-2 w-full sm:w-auto">
+                                    <Filter className="text-slate-400" size={18} />
+                                    <select
+                                        className="input-field px-0 py-3 cursor-pointer min-w-[170px] appearance-auto text-center"
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value)}
+                                    >
+                                        <option value="latest">Latest</option>
+                                        <option value="oldest">Oldest</option>
+                                        <option value="priority-desc">High Priority</option>
+                                        <option value="priority-asc">Low Priority</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -366,7 +407,7 @@ const AdminDashboard = () => {
                                             <td className="px-10 py-8">
                                                 {editingId === c._id ? (
                                                     <select
-                                                        className="bg-white border border-indigo-200 text-xs font-bold rounded-xl px-3 py-2 outline-none focus:ring-4 focus:ring-indigo-100"
+                                                        className="input-field px-0 py-2 text-xs font-bold w-[120px] cursor-pointer text-center"
                                                         value={updateForm.status}
                                                         onClick={(e) => e.stopPropagation()}
                                                         onChange={(e) => setUpdateForm({ ...updateForm, status: e.target.value })}
