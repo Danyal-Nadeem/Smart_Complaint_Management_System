@@ -13,6 +13,7 @@ import {
 import { clsx } from 'clsx';
 import { useAuth } from '../context/AuthContext';
 import AdminSidebar from '../components/AdminSidebar';
+import ComplaintDetailsModal from '../components/ComplaintDetailsModal';
 
 const AdminDashboard = () => {
     const { user } = useAuth();
@@ -25,6 +26,8 @@ const AdminDashboard = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('dashboard');
     const [isSystemOnline, setIsSystemOnline] = useState(true);
+    const [selectedComplaint, setSelectedComplaint] = useState(null);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
     // Process complaints data for the weekly analytics sparkline
     const processAnalyticsData = (allComplaints) => {
@@ -328,7 +331,14 @@ const AdminDashboard = () => {
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
                                     {filteredComplaints.map((c) => (
-                                        <tr key={c._id} className="hover:bg-slate-50/30 transition-colors group">
+                                        <tr
+                                            key={c._id}
+                                            onClick={() => {
+                                                setSelectedComplaint(c);
+                                                setIsDetailsModalOpen(true);
+                                            }}
+                                            className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
+                                        >
                                             <td className="px-10 py-8">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-lg capitalize border border-indigo-100">
@@ -358,6 +368,7 @@ const AdminDashboard = () => {
                                                     <select
                                                         className="bg-white border border-indigo-200 text-xs font-bold rounded-xl px-3 py-2 outline-none focus:ring-4 focus:ring-indigo-100"
                                                         value={updateForm.status}
+                                                        onClick={(e) => e.stopPropagation()}
                                                         onChange={(e) => setUpdateForm({ ...updateForm, status: e.target.value })}
                                                     >
                                                         <option value="Pending">Pending</option>
@@ -381,7 +392,7 @@ const AdminDashboard = () => {
                                                 {!isSystemOnline ? (
                                                     <span className="text-[10px] font-bold text-slate-400 italic">Management Disabled</span>
                                                 ) : editingId === c._id ? (
-                                                    <div className="flex items-center justify-end gap-3">
+                                                    <div className="flex items-center justify-end gap-3" onClick={(e) => e.stopPropagation()}>
                                                         <button
                                                             onClick={() => handleUpdate(c._id)}
                                                             className="px-5 py-2.5 text-xs bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
@@ -397,7 +408,8 @@ const AdminDashboard = () => {
                                                     </div>
                                                 ) : (
                                                     <button
-                                                        onClick={() => {
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
                                                             setEditingId(c._id);
                                                             setUpdateForm({ status: c.status, resolution: c.resolution || '' });
                                                         }}
@@ -415,6 +427,13 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Complaint Details Modal */}
+            <ComplaintDetailsModal
+                isOpen={isDetailsModalOpen}
+                onClose={() => setIsDetailsModalOpen(false)}
+                complaint={selectedComplaint}
+            />
         </div>
     );
 };
