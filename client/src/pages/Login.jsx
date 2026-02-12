@@ -33,7 +33,7 @@ const Login = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 flex items-center justify-center min-h-[85vh] py-20">
+        <div className="auth-page-bg px-4 py-20">
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}

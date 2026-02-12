@@ -40,7 +40,7 @@ const AdminRegister = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 min-h-[85vh] flex items-center justify-center py-20 bg-slate-50/50">
+        <div className="auth-page-bg px-4 py-20">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
