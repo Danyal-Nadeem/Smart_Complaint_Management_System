@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, List, Mail, BarChart3, Clock, CheckCircle, AlertTriangle, ChevronDown, UserCircle, Edit2 } from 'lucide-react';
 import { clsx } from 'clsx';
 import ProfileModal from './ProfileModal';
 
-const AdminSidebar = ({ complaints, activeSection, onNavigate, isMobileOpen, onClose }) => {
+const AdminSidebar = ({ complaints, isMobileOpen, onClose }) => {
     const { user } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [profileModal, setProfileModal] = useState({ isOpen: false, view: 'view' });
 
     // Calculate stats
-    // ... (rest of stats calculation stays the same)
     const totalComplaints = complaints.length;
     const pendingComplaints = complaints.filter(c => c.status === 'Pending').length;
     const resolvedComplaints = complaints.filter(c => c.status === 'Resolved').length;
     const inProgressComplaints = complaints.filter(c => c.status === 'In Progress').length;
 
     const menuItems = [
-        { id: 'dashboard', label: 'Overview', icon: Home },
-        { id: 'complaints', label: 'Manage Complaints', icon: List },
+        { id: 'dashboard', label: 'Overview', icon: Home, path: '/admin-dashboard' },
+        { id: 'complaints', label: 'Manage Complaints', icon: List, path: '/admin/complaints' },
     ];
 
     const stats = [
@@ -111,12 +113,12 @@ const AdminSidebar = ({ complaints, activeSection, onNavigate, isMobileOpen, onC
                         <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 px-3">Management</h4>
                         {menuItems.map((item) => {
                             const Icon = item.icon;
-                            const isActive = activeSection === item.id;
+                            const isActive = location.pathname === item.path;
                             return (
                                 <button
                                     key={item.id}
                                     onClick={() => {
-                                        onNavigate(item.id);
+                                        navigate(item.path);
                                         if (isMobileOpen) onClose();
                                     }}
                                     className={clsx(

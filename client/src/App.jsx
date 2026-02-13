@@ -13,6 +13,8 @@ import AdminLogin from './pages/AdminLogin';
 import AdminRegister from './pages/AdminRegister';
 import { Toaster } from 'react-hot-toast';
 
+import ManageComplaints from './pages/ManageComplaints';
+
 function App() {
   return (
     <AuthProvider>
@@ -40,6 +42,14 @@ function App() {
                 element={
                   <ProtectedRoute adminOnly={true}>
                     <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/complaints"
+                element={
+                  <ProtectedRoute adminOnly={true}>
+                    <ManageComplaints />
                   </ProtectedRoute>
                 }
               />

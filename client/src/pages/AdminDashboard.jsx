@@ -143,14 +143,6 @@ const AdminDashboard = () => {
             {/* Sidebar */}
             <AdminSidebar
                 complaints={complaints}
-                activeSection={activeSection}
-                onNavigate={(section) => {
-                    setActiveSection(section);
-                    const element = document.getElementById(section);
-                    if (element) {
-                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }}
                 isMobileOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
             />
@@ -172,7 +164,7 @@ const AdminDashboard = () => {
                     <header id="dashboard" className="flex flex-col md:flex-row md:items-end justify-between gap-6 scroll-mt-24">
                         <div>
                             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">Admin <span className="text-indigo-600">{user?.name}</span></h1>
-                            <p className="text-slate-500 mt-2 font-medium">Comprehensive system overview and complaint life-cycle management.</p>
+                            <p className="text-slate-500 mt-2 font-medium">Comprehensive system overview and analytics.</p>
                         </div>
                         <button
                             onClick={() => setIsSystemOnline(!isSystemOnline)}
@@ -322,148 +314,6 @@ const AdminDashboard = () => {
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </div>
-                        </div>
-                    </div>
-
-                    {/* Management Table */}
-                    <div id="complaints" className="premium-card overflow-hidden scroll-mt-24">
-                        <div className="p-6 sm:p-10 border-b border-slate-50 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                            <div>
-                                <h3 className="text-2xl font-black text-slate-900 font-outfit tracking-tight">Manage Complaints</h3>
-                                <p className="text-slate-500 text-sm font-medium mt-1">Update status and provide resolutions.</p>
-                            </div>
-                            <div className="flex flex-col sm:flex-row items-center gap-4">
-                                <div className="relative group w-full md:w-80">
-                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" size={18} />
-                                    <input
-                                        type="text"
-                                        className="input-field pl-12 w-full"
-                                        placeholder="Search user or title..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                    />
-                                </div>
-                                <div className="flex items-center gap-2 w-full sm:w-auto">
-                                    <Filter className="text-slate-400" size={18} />
-                                    <select
-                                        className="input-field px-0 py-3 cursor-pointer min-w-[170px] appearance-auto text-center"
-                                        value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
-                                    >
-                                        <option value="latest">Latest</option>
-                                        <option value="oldest">Oldest</option>
-                                        <option value="priority-desc">High Priority</option>
-                                        <option value="priority-asc">Low Priority</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="bg-slate-50/50 text-slate-400 text-[10px] uppercase font-black tracking-[0.2em]">
-                                        <th className="px-10 py-6">Submitted By</th>
-                                        <th className="px-10 py-6">Complaint Details</th>
-                                        <th className="px-10 py-6">Priority</th>
-                                        <th className="px-10 py-6">Status</th>
-                                        <th className="px-10 py-6 text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50">
-                                    {filteredComplaints.map((c) => (
-                                        <tr
-                                            key={c._id}
-                                            onClick={() => {
-                                                setSelectedComplaint(c);
-                                                setIsDetailsModalOpen(true);
-                                            }}
-                                            className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
-                                        >
-                                            <td className="px-10 py-8">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-lg capitalize border border-indigo-100">
-                                                        {c.user?.name.charAt(0)}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm font-bold text-slate-900 leading-tight">{c.user?.name}</p>
-                                                        <p className="text-xs text-slate-500 mt-0.5">{c.user?.email}</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-10 py-8">
-                                                <p className="text-sm font-bold text-slate-800 line-clamp-1 group-hover:text-indigo-600 transition-colors">{c.title}</p>
-                                                <p className="text-xs text-slate-500 line-clamp-1 mt-1 font-medium">{c.description}</p>
-                                            </td>
-                                            <td className="px-10 py-8">
-                                                <span className={clsx(
-                                                    "text-[10px] font-black px-3 py-1.5 rounded-xl border uppercase tracking-widest",
-                                                    c.priority === 'High' ? "text-red-600 bg-red-50 border-red-100" :
-                                                        c.priority === 'Medium' ? "text-amber-600 bg-amber-50 border-amber-100" : "text-emerald-600 bg-emerald-50 border-emerald-100"
-                                                )}>
-                                                    {c.priority}
-                                                </span>
-                                            </td>
-                                            <td className="px-10 py-8">
-                                                {editingId === c._id ? (
-                                                    <select
-                                                        className="input-field px-0 py-2 text-xs font-bold w-[120px] cursor-pointer text-center"
-                                                        value={updateForm.status}
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        onChange={(e) => setUpdateForm({ ...updateForm, status: e.target.value })}
-                                                    >
-                                                        <option value="Pending">Pending</option>
-                                                        <option value="In Progress">In Progress</option>
-                                                        <option value="Resolved">Resolved</option>
-                                                        <option value="Rejected">Rejected</option>
-                                                    </select>
-                                                ) : (
-                                                    <span className={clsx(
-                                                        "text-[10px] font-black px-4 py-2 rounded-xl border uppercase tracking-widest shadow-sm shadow-slate-100/50 whitespace-nowrap",
-                                                        c.status === 'Pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                                                            c.status === 'In Progress' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
-                                                                c.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                                                    'bg-red-50 text-red-600 border-red-100'
-                                                    )}>
-                                                        {c.status}
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td className="px-10 py-8 text-right">
-                                                {!isSystemOnline ? (
-                                                    <span className="text-[10px] font-bold text-slate-400 italic">Management Disabled</span>
-                                                ) : editingId === c._id ? (
-                                                    <div className="flex items-center justify-end gap-3" onClick={(e) => e.stopPropagation()}>
-                                                        <button
-                                                            onClick={() => handleUpdate(c._id)}
-                                                            className="px-5 py-2.5 text-xs bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
-                                                        >
-                                                            Save
-                                                        </button>
-                                                        <button
-                                                            onClick={() => setEditingId(null)}
-                                                            className="px-5 py-2.5 text-xs bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-all"
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    </div>
-                                                ) : (
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setEditingId(c._id);
-                                                            setUpdateForm({ status: c.status, resolution: c.resolution || '' });
-                                                        }}
-                                                        className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all border border-transparent hover:border-indigo-100"
-                                                    >
-                                                        <Edit3 size={18} />
-                                                    </button>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
