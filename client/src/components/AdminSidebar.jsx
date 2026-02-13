@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, List, Mail, BarChart3, Clock, CheckCircle, AlertTriangle, ChevronDown, UserCircle, Edit2 } from 'lucide-react';
+import { Home, List, Mail, BarChart3, Clock, CheckCircle, AlertTriangle, ChevronDown, UserCircle, Edit2, History } from 'lucide-react';
 import { clsx } from 'clsx';
 import ProfileModal from './ProfileModal';
 
@@ -22,6 +22,7 @@ const AdminSidebar = ({ complaints, isMobileOpen, onClose }) => {
     const menuItems = [
         { id: 'dashboard', label: 'Overview', icon: Home, path: '/admin-dashboard' },
         { id: 'complaints', label: 'Manage Complaints', icon: List, path: '/admin/complaints' },
+        { id: 'history', label: 'Complaint History', icon: History, path: '/admin/history' },
     ];
 
     const stats = [

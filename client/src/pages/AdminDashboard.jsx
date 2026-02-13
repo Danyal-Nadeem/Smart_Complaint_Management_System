@@ -207,7 +207,12 @@ const AdminDashboard = () => {
 
                     {/* Charts Section */}
                     <div className="grid lg:grid-cols-3 gap-8">
-                        <div className="premium-card p-6 h-[350px]">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                            className="premium-card p-6 h-[350px]"
+                        >
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-indigo-50 rounded-xl">
@@ -226,16 +231,28 @@ const AdminDashboard = () => {
                                         itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
                                         cursor={{ fill: '#f8fafc' }}
                                     />
-                                    <Bar dataKey="count" radius={[4, 4, 0, 0]} barSize={30}>
+                                    <Bar
+                                        dataKey="count"
+                                        radius={[4, 4, 0, 0]}
+                                        barSize={30}
+                                        isAnimationActive={true}
+                                        animationDuration={1500}
+                                        animationBegin={300}
+                                    >
                                         {(stats?.category || []).map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Bar>
                                 </BarChart>
                             </ResponsiveContainer>
-                        </div>
+                        </motion.div>
 
-                        <div className="premium-card p-6 h-[350px]">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                            className="premium-card p-6 h-[350px]"
+                        >
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-indigo-50 rounded-xl">
@@ -255,6 +272,9 @@ const AdminDashboard = () => {
                                         dataKey="count"
                                         nameKey="_id"
                                         stroke="none"
+                                        isAnimationActive={true}
+                                        animationDuration={1500}
+                                        animationBegin={500}
                                     >
                                         {stats?.priority.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -266,9 +286,14 @@ const AdminDashboard = () => {
                                     <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '10px' }} />
                                 </PieChart>
                             </ResponsiveContainer>
-                        </div>
+                        </motion.div>
 
-                        <div className="premium-card p-6 h-[350px] relative overflow-hidden flex flex-col justify-between">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                            className="premium-card p-6 h-[350px] relative overflow-hidden flex flex-col justify-between"
+                        >
                             <div>
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="flex items-center gap-3">
@@ -316,11 +341,14 @@ const AdminDashboard = () => {
                                             strokeWidth={3}
                                             fillOpacity={1}
                                             fill="url(#colorVal)"
+                                            isAnimationActive={true}
+                                            animationDuration={1500}
+                                            animationBegin={700}
                                         />
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </div>

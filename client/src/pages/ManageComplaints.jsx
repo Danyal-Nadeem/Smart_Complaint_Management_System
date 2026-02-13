@@ -51,8 +51,11 @@ const ManageComplaints = () => {
         }
     };
 
-    const filteredComplaints = useMemo(() => {
-        let result = (complaints || []).filter(c =>
+    const { displayComplaints, allComplaints } = useMemo(() => {
+        const fullList = complaints || [];
+        const activeList = fullList.filter(c => c.status === 'Pending' || c.status === 'In Progress');
+
+        let result = activeList.filter(c =>
             (c.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             (c.user?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
         );
@@ -76,7 +79,7 @@ const ManageComplaints = () => {
                 break;
         }
 
-        return result;
+        return { displayComplaints: result, allComplaints: fullList };
     }, [complaints, searchTerm, sortBy]);
 
     if (loading) return <div className="flex justify-center items-center h-[60vh] animate-pulse text-blue-500">Loading Complaints...</div>;
@@ -84,7 +87,7 @@ const ManageComplaints = () => {
     return (
         <div className="flex min-h-screen w-full bg-slate-50">
             <AdminSidebar
-                complaints={complaints}
+                complaints={allComplaints}
                 isMobileOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
             />
@@ -145,7 +148,7 @@ const ManageComplaints = () => {
                                 <div className="flex items-center gap-2 w-full sm:w-auto">
                                     <Filter className="text-slate-400" size={18} />
                                     <select
-                                        className="input-field px-0 py-3 cursor-pointer min-w-[170px] appearance-auto text-center"
+                                        className="input-field !px-0 py-3 cursor-pointer min-w-[170px] appearance-auto text-center"
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value)}
                                     >
@@ -170,7 +173,7 @@ const ManageComplaints = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
-                                    {filteredComplaints.map((c) => (
+                                    {displayComplaints.map((c) => (
                                         <tr
                                             key={c._id}
                                             onClick={() => {
@@ -206,7 +209,7 @@ const ManageComplaints = () => {
                                             <td className="px-10 py-8">
                                                 {editingId === c._id ? (
                                                     <select
-                                                        className="input-field px-0 py-2 text-xs font-bold w-[120px] cursor-pointer text-center"
+                                                        className="input-field !px-0 py-2 text-xs font-bold w-[120px] cursor-pointer text-center"
                                                         value={updateForm.status}
                                                         onClick={(e) => e.stopPropagation()}
                                                         onChange={(e) => setUpdateForm({ ...updateForm, status: e.target.value })}

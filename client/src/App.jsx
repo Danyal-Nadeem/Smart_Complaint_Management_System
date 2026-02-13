@@ -14,6 +14,7 @@ import AdminRegister from './pages/AdminRegister';
 import { Toaster } from 'react-hot-toast';
 
 import ManageComplaints from './pages/ManageComplaints';
+import ComplaintHistory from './pages/ComplaintHistory';
 
 function App() {
   return (
@@ -50,6 +51,14 @@ function App() {
                 element={
                   <ProtectedRoute adminOnly={true}>
                     <ManageComplaints />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/history"
+                element={
+                  <ProtectedRoute adminOnly={true}>
+                    <ComplaintHistory />
                   </ProtectedRoute>
                 }
               />
