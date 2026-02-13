@@ -10,14 +10,13 @@ import AdminSidebar from '../components/AdminSidebar';
 import ComplaintDetailsModal from '../components/ComplaintDetailsModal';
 
 const ManageComplaints = () => {
-    const { user } = useAuth();
+    const { user, isSystemOnline } = useAuth();
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [editingId, setEditingId] = useState(null);
     const [updateForm, setUpdateForm] = useState({ status: '', resolution: '' });
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isSystemOnline, setIsSystemOnline] = useState(true);
     const [selectedComplaint, setSelectedComplaint] = useState(null);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [sortBy, setSortBy] = useState('latest');
@@ -25,7 +24,7 @@ const ManageComplaints = () => {
     useEffect(() => {
         fetchComplaints();
     }, []);
-
+    // ... rest of functions stay the same
     const fetchComplaints = async () => {
         try {
             const token = sessionStorage.getItem('token');
@@ -107,10 +106,9 @@ const ManageComplaints = () => {
                             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">Manage <span className="text-indigo-600">Complaints</span></h1>
                             <p className="text-slate-500 mt-2 font-medium">Handle and resolve user complaints across the system.</p>
                         </div>
-                        <button
-                            onClick={() => setIsSystemOnline(!isSystemOnline)}
+                        <div
                             className={clsx(
-                                "flex items-center gap-3 p-1.5 rounded-2xl border shadow-sm transition-all hover:scale-105 active:scale-95",
+                                "flex items-center gap-3 p-1.5 rounded-2xl border shadow-sm transition-all",
                                 isSystemOnline ? "bg-white border-slate-100 shadow-slate-100/50" : "bg-red-50 border-red-100 shadow-red-100/50"
                             )}
                         >
@@ -124,7 +122,7 @@ const ManageComplaints = () => {
                             )}>
                                 System {isSystemOnline ? 'Online' : 'Offline'}
                             </span>
-                        </button>
+                        </div>
                     </header>
 
                     <div id="complaints" className="premium-card overflow-hidden scroll-mt-24">

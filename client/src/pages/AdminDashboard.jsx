@@ -16,7 +16,7 @@ import AdminSidebar from '../components/AdminSidebar';
 import ComplaintDetailsModal from '../components/ComplaintDetailsModal';
 
 const AdminDashboard = () => {
-    const { user } = useAuth();
+    const { user, isSystemOnline, setIsSystemOnline } = useAuth();
     const [complaints, setComplaints] = useState([]);
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -25,7 +25,6 @@ const AdminDashboard = () => {
     const [updateForm, setUpdateForm] = useState({ status: '', resolution: '' });
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('dashboard');
-    const [isSystemOnline, setIsSystemOnline] = useState(true);
     const [selectedComplaint, setSelectedComplaint] = useState(null);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [sortBy, setSortBy] = useState('latest'); // 'latest', 'oldest', 'priority-desc', 'priority-asc'

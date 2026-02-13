@@ -61,13 +61,15 @@ export const AuthProvider = ({ children }) => {
         return data;
     };
 
+    const [isSystemOnline, setIsSystemOnline] = useState(true);
+
     const logout = () => {
         sessionStorage.removeItem('token');
         setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile }}>
+        <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile, isSystemOnline, setIsSystemOnline }}>
             {children}
         </AuthContext.Provider>
     );
