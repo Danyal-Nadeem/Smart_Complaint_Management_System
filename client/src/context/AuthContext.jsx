@@ -1,11 +1,16 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 
 const AuthContext = createContext();
+
+const SOCKET_URL = 'http://localhost:5000';
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isSystemOnline, setIsSystemOnline] = useState(true);
+    const [socket, setSocket] = useState(null);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token');
@@ -14,7 +19,46 @@ export const AuthProvider = ({ children }) => {
         } else {
             setLoading(false);
         }
+
+        // Initialize socket connection
+        const newSocket = io(SOCKET_URL);
+        setSocket(newSocket);
+
+        // Fetch initial system status
+        fetchSystemStatus();
+
+        newSocket.on('systemStatusUpdate', (status) => {
+            console.log('System status updated via socket:', status);
+            setIsSystemOnline(status);
+        });
+
+        return () => newSocket.close();
     }, []);
+
+    const fetchSystemStatus = async () => {
+        try {
+            const { data } = await axios.get(`${SOCKET_URL}/api/system/status`);
+            setIsSystemOnline(data.data.isSystemOnline);
+        } catch (error) {
+            console.error('Error fetching system status', error);
+        }
+    };
+
+    const toggleSystemStatus = async () => {
+        try {
+            const token = sessionStorage.getItem('token');
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+            const { data } = await axios.put(`${SOCKET_URL}/api/system/toggle`, {}, config);
+            setIsSystemOnline(data.data.isSystemOnline);
+        } catch (error) {
+            console.error('Error toggling system status', error);
+            throw error;
+        }
+    };
 
     const fetchUser = async (token) => {
         try {
@@ -61,15 +105,22 @@ export const AuthProvider = ({ children }) => {
         return data;
     };
 
-    const [isSystemOnline, setIsSystemOnline] = useState(true);
-
     const logout = () => {
         sessionStorage.removeItem('token');
         setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile, isSystemOnline, setIsSystemOnline }}>
+        <AuthContext.Provider value={{
+            user,
+            loading,
+            login,
+            register,
+            logout,
+            updateProfile,
+            isSystemOnline,
+            toggleSystemStatus
+        }}>
             {children}
         </AuthContext.Provider>
     );

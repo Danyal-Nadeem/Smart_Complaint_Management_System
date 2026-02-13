@@ -5,8 +5,10 @@ import { PlusCircle, List, Clock, CheckCircle, XCircle, FileText, Send, Filter, 
 import { clsx } from 'clsx';
 import UserSidebar from '../components/UserSidebar';
 import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 const UserDashboard = () => {
+    const { isSystemOnline } = useAuth();
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -157,17 +159,29 @@ const UserDashboard = () => {
                 </div>
 
                 <div className="w-full space-y-10 pr-4 lg:pr-8 py-10 pt-24">
+                    {!isSystemOnline && (
+                        <div className="bg-red-50 border border-red-100 rounded-2xl p-4 flex items-center gap-4 text-red-600 font-bold animate-pulse">
+                            <AlertTriangle size={20} />
+                            <span>System is currently OFFLINE. Some features may be restricted.</span>
+                        </div>
+                    )}
                     <div id="dashboard" className="flex flex-col md:flex-row md:items-center justify-between gap-6 scroll-mt-24">
                         <div>
                             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">Your Complaints</h1>
                             <p className="text-slate-500 mt-2 font-medium">Submit new complaints and track their resolution status in real-time.</p>
                         </div>
                         <button
-                            onClick={() => setIsFormOpen(!isFormOpen)}
-                            className="flex items-center gap-2 premium-gradient px-8 py-3.5 rounded-2xl font-bold text-white shadow-xl shadow-indigo-200 hover:scale-[1.02] active:scale-95 transition-all"
+                            onClick={() => isSystemOnline ? setIsFormOpen(!isFormOpen) : toast.error('System is currently offline for maintenance')}
+                            disabled={!isSystemOnline}
+                            className={clsx(
+                                "flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-white shadow-xl transition-all",
+                                isSystemOnline
+                                    ? "premium-gradient shadow-indigo-200 hover:scale-[1.02] active:scale-95"
+                                    : "bg-slate-300 cursor-not-allowed opacity-70 shadow-none"
+                            )}
                         >
                             <PlusCircle size={22} />
-                            Submit Complaint
+                            {isSystemOnline ? 'Submit Complaint' : 'System Offline'}
                         </button>
                     </div>
 

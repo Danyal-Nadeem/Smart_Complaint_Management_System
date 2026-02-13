@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import {
     Users, MessageSquare, AlertCircle, CheckCircle2,
-    BarChart3, PieChart as PieChartIcon, ArrowRight,
+    BarChart3, PieChart as PieChartIcon, ArrowRight, TrendingUp,
     Search, Filter, MoreHorizontal, Edit3, XCircle, Menu, X
 } from 'lucide-react';
 import {
@@ -16,7 +16,7 @@ import AdminSidebar from '../components/AdminSidebar';
 import ComplaintDetailsModal from '../components/ComplaintDetailsModal';
 
 const AdminDashboard = () => {
-    const { user, isSystemOnline, setIsSystemOnline } = useAuth();
+    const { user, isSystemOnline, toggleSystemStatus } = useAuth();
     const [complaints, setComplaints] = useState([]);
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -166,7 +166,7 @@ const AdminDashboard = () => {
                             <p className="text-slate-500 mt-2 font-medium">Comprehensive system overview and analytics.</p>
                         </div>
                         <button
-                            onClick={() => setIsSystemOnline(!isSystemOnline)}
+                            onClick={toggleSystemStatus}
                             className={clsx(
                                 "flex items-center gap-3 p-1.5 rounded-2xl border shadow-sm transition-all hover:scale-105 active:scale-95",
                                 isSystemOnline ? "bg-white border-slate-100 shadow-slate-100/50" : "bg-red-50 border-red-100 shadow-red-100/50"
@@ -268,9 +268,16 @@ const AdminDashboard = () => {
                             </ResponsiveContainer>
                         </div>
 
-                        <div className="premium-card p-8 h-[350px] relative overflow-hidden flex flex-col justify-between">
+                        <div className="premium-card p-6 h-[350px] relative overflow-hidden flex flex-col justify-between">
                             <div>
-                                <h3 className="font-extrabold text-slate-900 text-lg font-outfit">Complaint Analytics</h3>
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-indigo-50 rounded-xl">
+                                            <TrendingUp className="text-indigo-600" size={18} />
+                                        </div>
+                                        <h3 className="font-extrabold text-slate-900 font-outfit uppercase tracking-tighter text-sm">Complaint Analytics</h3>
+                                    </div>
+                                </div>
                                 <div className="flex items-baseline gap-2 mt-4">
                                     <span className="text-5xl font-black text-slate-900">{complaints.filter(c => c.status === 'Resolved').length}</span>
                                     <span className="text-2xl font-bold text-slate-400">/ {complaints.length}</span>
