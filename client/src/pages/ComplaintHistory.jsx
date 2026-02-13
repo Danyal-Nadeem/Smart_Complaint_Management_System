@@ -70,15 +70,21 @@ const ComplaintHistory = () => {
     if (loading) return <div className="flex justify-center items-center h-[60vh] animate-pulse text-indigo-500 font-bold uppercase tracking-widest">Loading History...</div>;
 
     return (
-        <div className="flex min-h-screen w-full bg-slate-50">
+        <div className="flex h-screen w-full bg-slate-50 overflow-hidden">
             <AdminSidebar
                 complaints={allComplaints}
                 isMobileOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
             />
 
-            <div className="flex-1 w-full lg:pl-8" style={{ marginLeft: '288px' }}>
-                <div className="lg:hidden sticky top-16 z-30 bg-white border-b border-slate-100 px-4 py-3">
+            <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="flex-1 h-full overflow-y-auto lg:pl-8"
+                style={{ marginLeft: '288px' }}
+            >
+                <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-slate-100 px-4 py-3">
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 font-bold transition-colors"
@@ -226,7 +232,7 @@ const ComplaintHistory = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             <ComplaintDetailsModal
                 isOpen={isDetailsModalOpen}

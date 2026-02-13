@@ -212,6 +212,18 @@ exports.updateProfile = async (req, res) => {
     }
 };
 
+// @desc    Get all users
+// @route   GET /api/auth/users
+// @access  Private/Admin
+exports.getUsers = async (req, res) => {
+    try {
+        const users = await User.find({ role: 'user' });
+        res.status(200).json({ success: true, count: users.length, data: users });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
 // @desc    Get current logged in user
 // @route   GET /api/auth/me
 // @access  Private

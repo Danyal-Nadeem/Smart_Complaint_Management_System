@@ -23,6 +23,7 @@ const AdminSidebar = ({ complaints, isMobileOpen, onClose }) => {
         { id: 'dashboard', label: 'Overview', icon: Home, path: '/admin-dashboard' },
         { id: 'complaints', label: 'Manage Complaints', icon: List, path: '/admin/complaints' },
         { id: 'history', label: 'Complaint History', icon: History, path: '/admin/history' },
+        { id: 'analytics', label: 'User Analytics', icon: BarChart3, path: '/admin/analytics' },
     ];
 
     const stats = [
