@@ -146,9 +146,9 @@ const UserDashboard = () => {
             />
 
             {/* Main Content */}
-            <div className="flex-1 w-full lg:pl-8" style={{ marginLeft: '288px' }}>
+            <div className="flex-1 w-full lg:ml-72 lg:pl-8 px-4">
                 {/* Mobile Menu Toggle */}
-                <div className="lg:hidden sticky top-16 z-30 bg-white border-b border-slate-100 px-4 py-3">
+                <div className="lg:hidden sticky top-16 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 -mx-4 px-4 py-3 mb-6">
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 font-bold transition-colors"
@@ -217,7 +217,7 @@ const UserDashboard = () => {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-5">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                         <div className="space-y-2.5">
                                             <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Category</label>
                                             <select

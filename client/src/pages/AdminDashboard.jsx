@@ -148,10 +148,10 @@ const AdminDashboard = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="flex-1 h-full overflow-y-auto lg:pl-8"
-                style={{ marginLeft: '288px' }}
+                className="flex-1 h-full overflow-y-auto lg:ml-72 lg:pl-8 px-4"
             >
-                <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-slate-100 px-4 py-3">
+                {/* Mobile Menu Toggle */}
+                <div className="lg:hidden sticky top-16 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 -mx-4 px-4 py-3 mb-6">
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 font-bold transition-colors"
@@ -170,16 +170,16 @@ const AdminDashboard = () => {
                         <button
                             onClick={toggleSystemStatus}
                             className={clsx(
-                                "flex items-center gap-3 p-1.5 rounded-2xl border shadow-sm transition-all hover:scale-105 active:scale-95",
+                                "flex items-center gap-1.5 p-1 rounded-full border shadow-sm transition-all hover:scale-105 active:scale-95",
                                 isSystemOnline ? "bg-white border-slate-100 shadow-slate-100/50" : "bg-red-50 border-red-100 shadow-red-100/50"
                             )}
                         >
                             <div className={clsx(
-                                "w-2.5 h-2.5 rounded-full ml-2",
+                                "w-2.5 h-2.5 rounded-full ml-1.5",
                                 isSystemOnline ? "bg-emerald-500 animate-pulse" : "bg-red-500"
                             )}></div>
                             <span className={clsx(
-                                "text-[11px] font-black uppercase tracking-widest mr-3",
+                                "text-[11px] font-black uppercase tracking-widest mr-2",
                                 isSystemOnline ? "text-slate-600" : "text-red-600"
                             )}>
                                 System {isSystemOnline ? 'Online' : 'Offline'}
@@ -208,7 +208,7 @@ const AdminDashboard = () => {
                     </div>
 
                     {/* Charts Section */}
-                    <div className="grid lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}

@@ -81,10 +81,9 @@ const ComplaintHistory = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="flex-1 h-full overflow-y-auto lg:pl-8"
-                style={{ marginLeft: '288px' }}
+                className="flex-1 h-full overflow-y-auto lg:ml-72 lg:pl-8 px-4"
             >
-                <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-slate-100 px-4 py-3">
+                <div className="lg:hidden sticky top-16 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 -mx-4 px-4 py-3 mb-6">
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 font-bold transition-colors"
@@ -188,41 +187,41 @@ const ComplaintHistory = () => {
                                                 }}
                                                 className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
                                             >
-                                                <td className="px-10 py-8">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-600 font-black text-lg capitalize border border-slate-100 group-hover:bg-white transition-colors">
+                                                <td className="px-4 sm:px-10 py-6 sm:py-8">
+                                                    <div className="flex items-center gap-3 sm:gap-4">
+                                                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-slate-50 flex items-center justify-center text-slate-600 font-black text-sm capitalize border border-slate-100 group-hover:bg-white transition-colors">
                                                             {c.user?.name.charAt(0)}
                                                         </div>
                                                         <div>
                                                             <p className="text-sm font-bold text-slate-900 leading-tight">{c.user?.name}</p>
-                                                            <p className="text-xs text-slate-500 mt-0.5">{c.user?.email}</p>
+                                                            <p className="hidden sm:block text-xs text-slate-500 mt-0.5">{c.user?.email}</p>
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-10 py-8">
+                                                <td className="px-4 sm:px-10 py-6 sm:py-8">
                                                     <p className="text-sm font-bold text-slate-800 line-clamp-1 group-hover:text-indigo-600 transition-colors">{c.title}</p>
-                                                    <p className="text-xs text-slate-500 line-clamp-1 mt-1 font-medium">{c.description}</p>
+                                                    <p className="hidden md:block text-xs text-slate-500 line-clamp-1 mt-1 font-medium">{c.description}</p>
                                                 </td>
-                                                <td className="px-10 py-8">
+                                                <td className="px-4 sm:px-10 py-6 sm:py-8">
                                                     <span className={clsx(
-                                                        "text-[10px] font-black px-3 py-1.5 rounded-xl border uppercase tracking-widest",
+                                                        "text-[9px] sm:text-[10px] font-black px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border uppercase tracking-widest",
                                                         c.priority === 'High' ? "text-red-600 bg-red-50 border-red-100" :
                                                             c.priority === 'Medium' ? "text-amber-600 bg-amber-50 border-amber-100" : "text-emerald-600 bg-emerald-50 border-emerald-100"
                                                     )}>
                                                         {c.priority}
                                                     </span>
                                                 </td>
-                                                <td className="px-10 py-8">
+                                                <td className="px-4 sm:px-10 py-6 sm:py-8">
                                                     <span className={clsx(
-                                                        "text-[10px] font-black px-4 py-2 rounded-xl border uppercase tracking-widest flex items-center gap-2 w-fit",
+                                                        "text-[9px] sm:text-[10px] font-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border uppercase tracking-widest flex items-center gap-1 sm:gap-2 w-fit",
                                                         c.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
                                                     )}>
-                                                        {c.status === 'Resolved' ? <CheckCircle size={12} /> : <XCircle size={12} />}
+                                                        {c.status === 'Resolved' ? <CheckCircle size={10} className="sm:w-3 sm:h-3" /> : <XCircle size={10} className="sm:w-3 sm:h-3" />}
                                                         {c.status}
                                                     </span>
                                                 </td>
-                                                <td className="px-10 py-8 text-right">
-                                                    <button className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-indigo-600 transition-colors">View Details</button>
+                                                <td className="px-4 sm:px-10 py-6 sm:py-8 text-right">
+                                                    <button className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-indigo-600 transition-colors">Details</button>
                                                 </td>
                                             </tr>
                                         ))

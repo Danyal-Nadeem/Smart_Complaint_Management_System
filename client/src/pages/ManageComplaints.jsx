@@ -96,10 +96,9 @@ const ManageComplaints = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="flex-1 h-full overflow-y-auto lg:pl-8"
-                style={{ marginLeft: '288px' }}
+                className="flex-1 h-full overflow-y-auto lg:ml-72 lg:pl-8 px-4"
             >
-                <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-slate-100 px-4 py-3">
+                <div className="lg:hidden sticky top-16 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 -mx-4 px-4 py-3 mb-6">
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 font-bold transition-colors"
@@ -188,34 +187,34 @@ const ManageComplaints = () => {
                                             }}
                                             className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
                                         >
-                                            <td className="px-10 py-8">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-lg capitalize border border-indigo-100">
+                                            <td className="px-4 sm:px-10 py-6 sm:py-8">
+                                                <div className="flex items-center gap-3 sm:gap-4">
+                                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-base sm:text-lg capitalize border border-indigo-100">
                                                         {c.user?.name.charAt(0)}
                                                     </div>
                                                     <div>
                                                         <p className="text-sm font-bold text-slate-900 leading-tight">{c.user?.name}</p>
-                                                        <p className="text-xs text-slate-500 mt-0.5">{c.user?.email}</p>
+                                                        <p className="hidden sm:block text-xs text-slate-500 mt-0.5">{c.user?.email}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-10 py-8">
+                                            <td className="px-4 sm:px-10 py-6 sm:py-8">
                                                 <p className="text-sm font-bold text-slate-800 line-clamp-1 group-hover:text-indigo-600 transition-colors">{c.title}</p>
-                                                <p className="text-xs text-slate-500 line-clamp-1 mt-1 font-medium">{c.description}</p>
+                                                <p className="hidden md:block text-xs text-slate-500 line-clamp-1 mt-1 font-medium">{c.description}</p>
                                             </td>
-                                            <td className="px-10 py-8">
+                                            <td className="px-4 sm:px-10 py-6 sm:py-8">
                                                 <span className={clsx(
-                                                    "text-[10px] font-black px-3 py-1.5 rounded-xl border uppercase tracking-widest",
+                                                    "text-[9px] sm:text-[10px] font-black px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border uppercase tracking-widest",
                                                     c.priority === 'High' ? "text-red-600 bg-red-50 border-red-100" :
                                                         c.priority === 'Medium' ? "text-amber-600 bg-amber-50 border-amber-100" : "text-emerald-600 bg-emerald-50 border-emerald-100"
                                                 )}>
                                                     {c.priority}
                                                 </span>
                                             </td>
-                                            <td className="px-10 py-8">
+                                            <td className="px-4 sm:px-10 py-6 sm:py-8">
                                                 {editingId === c._id ? (
                                                     <select
-                                                        className="input-field !px-0 py-2 text-xs font-bold w-[120px] cursor-pointer text-center"
+                                                        className="input-field !px-0 py-2 text-xs font-bold w-[100px] sm:w-[120px] cursor-pointer text-center"
                                                         value={updateForm.status}
                                                         onClick={(e) => e.stopPropagation()}
                                                         onChange={(e) => setUpdateForm({ ...updateForm, status: e.target.value })}
@@ -227,7 +226,7 @@ const ManageComplaints = () => {
                                                     </select>
                                                 ) : (
                                                     <span className={clsx(
-                                                        "text-[10px] font-black px-4 py-2 rounded-xl border uppercase tracking-widest shadow-sm shadow-slate-100/50 whitespace-nowrap",
+                                                        "text-[9px] sm:text-[10px] font-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border uppercase tracking-widest shadow-sm shadow-slate-100/50 whitespace-nowrap",
                                                         c.status === 'Pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                                             c.status === 'In Progress' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
                                                                 c.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
@@ -237,20 +236,20 @@ const ManageComplaints = () => {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="px-10 py-8 text-right">
+                                            <td className="px-4 sm:px-10 py-6 sm:py-8 text-right">
                                                 {!isSystemOnline ? (
-                                                    <span className="text-[10px] font-bold text-slate-400 italic">Management Disabled</span>
+                                                    <span className="text-[10px] font-bold text-slate-400 italic">Disabled</span>
                                                 ) : editingId === c._id ? (
-                                                    <div className="flex items-center justify-end gap-3" onClick={(e) => e.stopPropagation()}>
+                                                    <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                                                         <button
                                                             onClick={() => handleUpdate(c._id)}
-                                                            className="px-5 py-2.5 text-xs bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
+                                                            className="px-3 sm:px-5 py-2 sm:py-2.5 text-[10px] sm:text-xs bg-indigo-600 text-white rounded-lg sm:rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
                                                         >
                                                             Save
                                                         </button>
                                                         <button
                                                             onClick={() => setEditingId(null)}
-                                                            className="px-5 py-2.5 text-xs bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-all"
+                                                            className="px-3 sm:px-5 py-2 sm:py-2.5 text-[10px] sm:text-xs bg-slate-100 text-slate-600 rounded-lg sm:rounded-xl font-bold hover:bg-slate-200 transition-all"
                                                         >
                                                             Cancel
                                                         </button>
@@ -262,9 +261,9 @@ const ManageComplaints = () => {
                                                             setEditingId(c._id);
                                                             setUpdateForm({ status: c.status, resolution: c.resolution || '' });
                                                         }}
-                                                        className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all border border-transparent hover:border-indigo-100"
+                                                        className="p-2 sm:p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl sm:rounded-2xl transition-all border border-transparent hover:border-indigo-100"
                                                     >
-                                                        <Edit3 size={18} />
+                                                        <Edit3 size={16} className="sm:w-[18px] sm:h-[18px]" />
                                                     </button>
                                                 )}
                                             </td>

@@ -10,7 +10,6 @@ const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [profileModal, setProfileModal] = useState({ isOpen: false, view: 'view' });
@@ -18,7 +17,6 @@ const Navbar = () => {
     const handleLogout = () => {
         logout();
         setIsLogoutConfirmOpen(false);
-        setIsMenuOpen(false);
         setIsProfileOpen(false);
         navigate('/');
     };
@@ -120,10 +118,9 @@ const Navbar = () => {
             ) : (
                 !isGateway && (
                     <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 px-4 md:px-0 py-2 md:py-0">
-                        <Link to={isAdminPortal ? "/admin/login" : "/login"} onClick={() => setIsMenuOpen(false)} className="text-slate-600 hover:text-indigo-600 text-sm font-semibold transition-colors">Login</Link>
+                        <Link to={isAdminPortal ? "/admin/login" : "/login"} className="text-slate-600 hover:text-indigo-600 text-sm font-semibold transition-colors">Login</Link>
                         <Link
                             to={isAdminPortal ? "/admin/register" : "/register"}
-                            onClick={() => setIsMenuOpen(false)}
                             className="premium-gradient px-6 py-2 rounded-2xl text-sm font-bold text-white premium-shadow hover:opacity-90 transition-all active:scale-95 text-center"
                         >
                             Get Started
@@ -138,48 +135,24 @@ const Navbar = () => {
         <>
             <nav className="glass fixed top-0 left-0 right-0 z-50">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-2xl font-black text-slate-900 tracking-tight">
+                    <Link to="/" className="flex items-center gap-2 sm:gap-3 text-xl sm:text-2xl font-black text-slate-900 tracking-tight transition-transform active:scale-95 shrink-0">
                         <div className="relative">
-                            <Shield className="text-indigo-600 fill-indigo-50" size={32} strokeWidth={2.5} />
+                            <Shield className="text-indigo-600 fill-indigo-50 w-6 h-6 sm:w-8 sm:h-8" strokeWidth={2.5} />
                         </div>
-                        <span className="font-outfit flex items-baseline gap-2">
+                        <span className="font-outfit flex items-baseline gap-1.5 sm:gap-2">
                             <span>CMS <span className="text-indigo-600">Pro</span></span>
-                            {isUserPortal && <span className="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] font-sans">User</span>}
-                            {isAdminPortal && <span className="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] font-sans">Admin</span>}
+                            {isUserPortal && <span className="text-slate-400 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] font-sans">User</span>}
+                            {isAdminPortal && <span className="text-slate-400 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] font-sans">Admin</span>}
                         </span>
                     </Link>
 
-                    {/* Desktop Menu */}
-                    <div className="hidden md:flex items-center gap-6">
+                    {/* Navigation Menu (Always Visible) */}
+                    <div className="flex items-center gap-6">
                         <NavLinks />
                     </div>
 
-                    {/* Mobile Menu Toggle */}
-                    <div className="md:hidden">
-                        <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="p-2 text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"
-                        >
-                            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                        </button>
-                    </div>
                 </div>
 
-                {/* Mobile Menu Overlay */}
-                <AnimatePresence>
-                    {isMenuOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="md:hidden border-t border-slate-100 bg-white/80 backdrop-blur-xl overflow-hidden"
-                        >
-                            <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
-                                <NavLinks />
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
             </nav>
 
             {/* Logout Confirmation Modal */}

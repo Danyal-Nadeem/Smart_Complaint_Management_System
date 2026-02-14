@@ -106,10 +106,9 @@ const UserAnalytics = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="flex-1 h-full overflow-y-auto lg:pl-8"
-                style={{ marginLeft: '288px' }}
+                className="flex-1 h-full overflow-y-auto lg:ml-72 lg:pl-8 px-4"
             >
-                <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-slate-100 px-4 py-3">
+                <div className="lg:hidden sticky top-16 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 -mx-4 px-4 py-3 mb-6">
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 font-bold transition-colors"
@@ -191,39 +190,39 @@ const UserAnalytics = () => {
                                 <tbody className="divide-y divide-slate-50">
                                     {userAnalytics.map((u) => (
                                         <tr key={u.id} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-10 py-6">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-sm capitalize border border-indigo-100">
+                                            <td className="px-4 sm:px-10 py-4 sm:py-6">
+                                                <div className="flex items-center gap-3 sm:gap-4">
+                                                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-xs sm:text-sm capitalize border border-indigo-100">
                                                         {u.name.charAt(0)}
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-bold text-slate-900">{u.name}</p>
-                                                        <p className="text-xs text-slate-500 font-medium">{u.email}</p>
+                                                        <p className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1">{u.name}</p>
+                                                        <p className="hidden md:block text-[10px] sm:text-xs text-slate-500 font-medium line-clamp-1">{u.email}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-10 py-6 text-center">
-                                                <span className="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-900 text-xs font-black">
+                                            <td className="px-4 sm:px-10 py-4 sm:py-6 text-center">
+                                                <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-slate-100 text-slate-900 text-[10px] sm:text-xs font-black">
                                                     {u.total}
                                                 </span>
                                             </td>
-                                            <td className="px-10 py-6 text-center">
-                                                <span className="text-sm font-bold text-amber-500 opacity-60 group-hover:opacity-100 transition-opacity">
+                                            <td className="px-4 sm:px-10 py-4 sm:py-6 text-center">
+                                                <span className="text-xs sm:text-sm font-bold text-amber-500 opacity-60 group-hover:opacity-100 transition-opacity">
                                                     {u.pending > 0 ? u.pending : '-'}
                                                 </span>
                                             </td>
-                                            <td className="px-10 py-6 text-center">
-                                                <span className="text-sm font-bold text-blue-500 opacity-60 group-hover:opacity-100 transition-opacity">
+                                            <td className="px-4 sm:px-10 py-4 sm:py-6 text-center">
+                                                <span className="text-xs sm:text-sm font-bold text-blue-500 opacity-60 group-hover:opacity-100 transition-opacity">
                                                     {u.inProgress > 0 ? u.inProgress : '-'}
                                                 </span>
                                             </td>
-                                            <td className="px-10 py-6 text-center">
-                                                <span className="text-sm font-bold text-emerald-500 group-hover:scale-110 inline-block transition-transform">
+                                            <td className="px-4 sm:px-10 py-4 sm:py-6 text-center">
+                                                <span className="text-xs sm:text-sm font-bold text-emerald-500 group-hover:scale-110 inline-block transition-transform">
                                                     {u.resolved > 0 ? u.resolved : '-'}
                                                 </span>
                                             </td>
-                                            <td className="px-10 py-6 text-center">
-                                                <span className="text-sm font-bold text-red-500 opacity-60 group-hover:opacity-100 transition-opacity">
+                                            <td className="px-4 sm:px-10 py-4 sm:py-6 text-center">
+                                                <span className="text-xs sm:text-sm font-bold text-red-500 opacity-60 group-hover:opacity-100 transition-opacity">
                                                     {u.rejected > 0 ? u.rejected : '-'}
                                                 </span>
                                             </td>
