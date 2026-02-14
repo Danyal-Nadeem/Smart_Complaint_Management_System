@@ -116,12 +116,17 @@ const Navbar = () => {
                     </div>
                 </>
             ) : (
-                !isGateway && (
-                    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 px-4 md:px-0 py-2 md:py-0">
-                        <Link to={isAdminPortal ? "/admin/login" : "/login"} className="text-slate-600 hover:text-indigo-600 text-sm font-semibold transition-colors">Login</Link>
+                (
+                    <div className="flex flex-row items-center gap-3 sm:gap-6">
+                        <Link
+                            to={isAdminPortal ? "/admin/login" : "/login"}
+                            className="text-slate-600 hover:text-indigo-600 text-[13px] sm:text-sm font-bold transition-all px-2"
+                        >
+                            Login
+                        </Link>
                         <Link
                             to={isAdminPortal ? "/admin/register" : "/register"}
-                            className="premium-gradient px-6 py-2 rounded-2xl text-sm font-bold text-white premium-shadow hover:opacity-90 transition-all active:scale-95 text-center"
+                            className="premium-gradient px-4 sm:px-6 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl text-[13px] sm:text-sm font-bold text-white premium-shadow hover:opacity-90 transition-all active:scale-95 text-center whitespace-nowrap"
                         >
                             Get Started
                         </Link>
