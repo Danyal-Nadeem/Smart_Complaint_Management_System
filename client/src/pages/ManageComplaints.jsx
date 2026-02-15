@@ -15,7 +15,7 @@ const ManageComplaints = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [editingId, setEditingId] = useState(null);
-    const [updateForm, setUpdateForm] = useState({ status: '', resolution: '' });
+    const [updateForm, setUpdateForm] = useState({ status: '', resolution: '', estimatedCompletionDate: '' });
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [selectedComplaint, setSelectedComplaint] = useState(null);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -213,27 +213,48 @@ const ManageComplaints = () => {
                                             </td>
                                             <td className="px-4 sm:px-10 py-6 sm:py-8">
                                                 {editingId === c._id ? (
-                                                    <select
-                                                        className="input-field !px-0 py-2 text-xs font-bold w-[100px] sm:w-[120px] cursor-pointer text-center"
-                                                        value={updateForm.status}
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        onChange={(e) => setUpdateForm({ ...updateForm, status: e.target.value })}
-                                                    >
-                                                        <option value="Pending">Pending</option>
-                                                        <option value="In Progress">In Progress</option>
-                                                        <option value="Resolved">Resolved</option>
-                                                        <option value="Rejected">Rejected</option>
-                                                    </select>
+                                                    <>
+                                                        <select
+                                                            className="input-field !px-0 py-2 text-xs font-bold w-[100px] sm:w-[120px] cursor-pointer text-center"
+                                                            value={updateForm.status}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            onChange={(e) => setUpdateForm({ ...updateForm, status: e.target.value })}
+                                                        >
+                                                            <option value="Pending">Pending</option>
+                                                            <option value="In Progress">In Progress</option>
+                                                            <option value="Resolved">Resolved</option>
+                                                            <option value="Rejected">Rejected</option>
+                                                        </select>
+                                                        {updateForm.status === 'In Progress' && (
+                                                            <div className="mt-2 flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
+                                                                <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest text-left ml-1">Est. Completion</label>
+                                                                <input
+                                                                    type="datetime-local"
+                                                                    className="input-field !px-2 py-1 text-[10px] w-full"
+                                                                    value={updateForm.estimatedCompletionDate}
+                                                                    min={new Date().toISOString().slice(0, 16)}
+                                                                    onChange={(e) => setUpdateForm({ ...updateForm, estimatedCompletionDate: e.target.value })}
+                                                                />
+                                                            </div>
+                                                        )}
+                                                    </>
                                                 ) : (
-                                                    <span className={clsx(
-                                                        "text-[9px] sm:text-[10px] font-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border uppercase tracking-widest shadow-sm shadow-slate-100/50 whitespace-nowrap",
-                                                        c.status === 'Pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                                                            c.status === 'In Progress' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
-                                                                c.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                                                    'bg-red-50 text-red-600 border-red-100'
-                                                    )}>
-                                                        {c.status}
-                                                    </span>
+                                                    <div className="flex flex-col gap-1 items-center">
+                                                        <span className={clsx(
+                                                            "text-[9px] sm:text-[10px] font-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border uppercase tracking-widest shadow-sm shadow-slate-100/50 whitespace-nowrap",
+                                                            c.status === 'Pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                                                c.status === 'In Progress' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
+                                                                    c.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                                                        'bg-red-50 text-red-600 border-red-100'
+                                                        )}>
+                                                            {c.status}
+                                                        </span>
+                                                        {c.status === 'In Progress' && (
+                                                            <span className="text-[8px] font-bold text-slate-400">
+                                                                {c.estimatedCompletionDate ? new Date(c.estimatedCompletionDate).toLocaleString() : 'No Timer Set'}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 )}
                                             </td>
                                             <td className="px-4 sm:px-10 py-6 sm:py-8 text-right">
@@ -259,7 +280,11 @@ const ManageComplaints = () => {
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             setEditingId(c._id);
-                                                            setUpdateForm({ status: c.status, resolution: c.resolution || '' });
+                                                            setUpdateForm({
+                                                                status: c.status,
+                                                                resolution: c.resolution || '',
+                                                                estimatedCompletionDate: c.estimatedCompletionDate ? new Date(c.estimatedCompletionDate).toISOString().slice(0, 16) : ''
+                                                            });
                                                         }}
                                                         className="p-2 sm:p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl sm:rounded-2xl transition-all border border-transparent hover:border-indigo-100"
                                                     >

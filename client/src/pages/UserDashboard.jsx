@@ -6,6 +6,7 @@ import { clsx } from 'clsx';
 import UserSidebar from '../components/UserSidebar';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import CountdownTimer from '../components/CountdownTimer';
 
 const UserDashboard = () => {
     const { isSystemOnline } = useAuth();
@@ -346,6 +347,19 @@ const UserDashboard = () => {
 
                                         <h3 className="text-xl font-extrabold mb-3 line-clamp-1 group-hover:text-indigo-600 transition-colors uppercase tracking-tight font-outfit text-slate-900">{complaint.title}</h3>
                                         <p className="text-slate-500 text-sm mb-6 line-clamp-3 leading-relaxed font-medium">{complaint.description}</p>
+
+                                        {complaint.status === 'In Progress' && (
+                                            <div className="mb-6 flex justify-center">
+                                                {complaint.estimatedCompletionDate ? (
+                                                    <CountdownTimer targetDate={complaint.estimatedCompletionDate} />
+                                                ) : (
+                                                    <div className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-2">
+                                                        <Clock size={14} className="text-slate-400" />
+                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Resolution Time Pending</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
 
                                         <div className="flex items-center justify-between pt-5 border-t border-slate-50">
                                             <div className="flex items-center gap-2 text-xs text-slate-400 font-bold">

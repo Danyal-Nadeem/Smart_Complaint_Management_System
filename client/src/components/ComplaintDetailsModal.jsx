@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, Mail, MessageSquare, Tag, AlertCircle, Clock, Calendar, Shield, Hash } from 'lucide-react';
 import { clsx } from 'clsx';
+import CountdownTimer from './CountdownTimer';
 
 const ComplaintDetailsModal = ({ isOpen, onClose, complaint }) => {
     if (!complaint) return null;
@@ -62,6 +63,12 @@ const ComplaintDetailsModal = ({ isOpen, onClose, complaint }) => {
                                 </button>
                             </div>
                         </div>
+
+                        {complaint.status === 'In Progress' && complaint.estimatedCompletionDate && (
+                            <div className="px-8 py-3 bg-indigo-50/30 border-b border-slate-100 flex justify-center">
+                                <CountdownTimer targetDate={complaint.estimatedCompletionDate} />
+                            </div>
+                        )}
 
                         {/* Content */}
                         <div className="flex-1 overflow-y-auto custom-scrollbar p-8">

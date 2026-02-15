@@ -35,6 +35,9 @@ const complaintSchema = new mongoose.Schema({
     },
     resolution: {
         type: String
+    },
+    estimatedCompletionDate: {
+        type: Date
     }
 }, {
     timestamps: true
