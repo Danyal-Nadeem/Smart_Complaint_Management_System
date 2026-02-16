@@ -78,6 +78,10 @@ const AdminDashboard = () => {
             setStats(statsRes.data.data);
         } catch (error) {
             console.error('Error fetching admin data', error);
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                // AuthContext interceptor will handle logout, but we can ensure navigation here
+                navigate('/admin/login');
+            }
         } finally {
             setLoading(false);
         }

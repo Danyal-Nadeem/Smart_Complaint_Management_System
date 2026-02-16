@@ -8,16 +8,15 @@ const sendEmail = require('../utils/sendEmail');
 // @access  Public
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
-
         // Create user
-        const isUser = role === 'user';
+        const finalRole = role === 'admin' ? 'admin' : 'user';
+        const isUser = finalRole === 'user';
 
         const user = await User.create({
             name,
             email,
             password,
-            role,
+            role: finalRole,
             status: isUser ? 'approved' : 'pending',
             approvalToken: isUser ? undefined : crypto.randomBytes(20).toString('hex'),
             approvalTokenExpire: isUser ? undefined : Date.now() + 24 * 60 * 60 * 1000 // 24 hours

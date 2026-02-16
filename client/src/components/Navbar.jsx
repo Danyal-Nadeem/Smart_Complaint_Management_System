@@ -175,23 +175,23 @@ const Navbar = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative bg-white rounded-3xl p-8 premium-shadow max-w-sm w-full text-center"
+                            className="relative bg-white rounded-3xl p-6 premium-shadow max-w-[320px] w-full text-center"
                         >
-                            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <LogOut className="text-red-500" size={32} />
+                            <div className="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <LogOut className="text-red-500" size={24} />
                             </div>
-                            <h3 className="text-2xl font-black text-slate-900 font-outfit mb-2">Sign Out?</h3>
-                            <p className="text-slate-500 font-medium mb-8">Are you sure you want to log out of your account?</p>
-                            <div className="grid grid-cols-2 gap-4">
+                            <h3 className="text-xl font-black text-slate-900 font-outfit mb-1.5">Sign Out?</h3>
+                            <p className="text-[13px] text-slate-500 font-medium mb-6 px-2">Are you sure you want to log out of your account?</p>
+                            <div className="grid grid-cols-2 gap-3">
                                 <button
                                     onClick={() => setIsLogoutConfirmOpen(false)}
-                                    className="px-6 py-3 rounded-xl border border-slate-100 text-slate-600 font-bold hover:bg-slate-50 transition-all"
+                                    className="px-4 py-2.5 rounded-xl border border-slate-100 text-[13px] text-slate-600 font-bold hover:bg-slate-50 transition-all"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleLogout}
-                                    className="px-6 py-3 rounded-xl bg-red-500 text-white font-bold premium-shadow hover:bg-red-600 transition-all active:scale-95"
+                                    className="px-4 py-2.5 rounded-xl bg-red-500 text-[13px] text-white font-bold premium-shadow hover:bg-red-600 transition-all active:scale-95"
                                 >
                                     Sign Out
                                 </button>

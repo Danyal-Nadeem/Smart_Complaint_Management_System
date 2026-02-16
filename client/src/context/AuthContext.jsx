@@ -12,6 +12,36 @@ export const AuthProvider = ({ children }) => {
     const [isSystemOnline, setIsSystemOnline] = useState(true);
     const [socket, setSocket] = useState(null);
 
+    // Axios interceptor for security
+    useEffect(() => {
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    logout();
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        // Listen for storage changes (detect manual token removal/change in another tab or devtools)
+        const handleStorageChange = (e) => {
+            if (e.key === 'token') {
+                if (!e.newValue) {
+                    logout();
+                } else {
+                    fetchUser(e.newValue);
+                }
+            }
+        };
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
     useEffect(() => {
         const token = sessionStorage.getItem('token');
         if (token) {

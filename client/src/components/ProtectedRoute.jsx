@@ -7,8 +7,9 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Verifying Identity</p>
             </div>
         );
     }

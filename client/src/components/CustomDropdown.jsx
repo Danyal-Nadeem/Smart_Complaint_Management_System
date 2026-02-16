@@ -36,7 +36,10 @@ const CustomDropdown = ({
         <div className="relative w-full" ref={dropdownRef}>
             <button
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setIsOpen(!isOpen);
+                }}
                 className={clsx(
                     "w-full flex items-center justify-between px-5 py-3 rounded-xl border bg-white transition-all text-sm font-bold group",
                     isOpen ? "border-indigo-600 ring-4 ring-indigo-50 shadow-sm" : "border-slate-100 hover:border-slate-300",
@@ -66,6 +69,7 @@ const CustomDropdown = ({
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.15, ease: "easeOut" }}
                         className="absolute z-[100] w-full mt-2 bg-white rounded-2xl border border-slate-100 shadow-2xl shadow-slate-200/50 p-2 max-h-60 overflow-y-auto"
+                        onClick={(e) => e.stopPropagation()}
                     >
                         {options.map((opt, idx) => {
                             const optValue = getValue(opt);
@@ -76,7 +80,8 @@ const CustomDropdown = ({
                                 <button
                                     key={idx}
                                     type="button"
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                         onChange(optValue);
                                         setIsOpen(false);
                                     }}
