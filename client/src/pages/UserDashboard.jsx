@@ -250,7 +250,16 @@ const UserDashboard = () => {
                                     </div>
 
                                     <div className="md:col-span-2 flex justify-end">
-                                        <button type="submit" className="premium-gradient px-6 py-2.5 rounded-xl font-bold text-white text-sm flex items-center gap-2 premium-shadow hover:opacity-95 transition-all active:scale-95">
+                                        <button
+                                            type="submit"
+                                            disabled={!isSystemOnline}
+                                            className={clsx(
+                                                "px-6 py-2.5 rounded-xl font-bold text-white text-sm flex items-center gap-2 premium-shadow transition-all active:scale-95",
+                                                isSystemOnline
+                                                    ? "premium-gradient hover:opacity-95"
+                                                    : "bg-slate-300 cursor-not-allowed opacity-70"
+                                            )}
+                                        >
                                             {editingComplaint ? <CheckCircle size={18} /> : <Send size={18} />}
                                             {editingComplaint ? 'Update Ticket' : 'Submit Ticket'}
                                         </button>
