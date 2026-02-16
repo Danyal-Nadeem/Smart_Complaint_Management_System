@@ -175,13 +175,13 @@ const UserDashboard = () => {
                             onClick={() => isSystemOnline ? setIsFormOpen(!isFormOpen) : toast.error('System is currently offline for maintenance')}
                             disabled={!isSystemOnline}
                             className={clsx(
-                                "flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-white shadow-xl transition-all",
+                                "flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-white text-sm shadow-lg transition-all",
                                 isSystemOnline
-                                    ? "premium-gradient shadow-indigo-200 hover:scale-[1.02] active:scale-95"
+                                    ? "premium-gradient shadow-indigo-100 hover:scale-[1.02] active:scale-95"
                                     : "bg-slate-300 cursor-not-allowed opacity-70 shadow-none"
                             )}
                         >
-                            <PlusCircle size={22} />
+                            <PlusCircle size={16} />
                             {isSystemOnline ? 'Submit Complaint' : 'System Offline'}
                         </button>
                     </div>
@@ -259,8 +259,8 @@ const UserDashboard = () => {
                                     </div>
 
                                     <div className="md:col-span-2 flex justify-end">
-                                        <button type="submit" className="premium-gradient px-12 py-4 rounded-2xl font-extrabold text-white flex items-center gap-3 premium-shadow hover:opacity-95 transition-all active:scale-95">
-                                            {editingComplaint ? <CheckCircle size={20} /> : <Send size={20} />}
+                                        <button type="submit" className="premium-gradient px-6 py-2.5 rounded-xl font-bold text-white text-sm flex items-center gap-2 premium-shadow hover:opacity-95 transition-all active:scale-95">
+                                            {editingComplaint ? <CheckCircle size={18} /> : <Send size={18} />}
                                             {editingComplaint ? 'Update Ticket' : 'Submit Ticket'}
                                         </button>
                                     </div>
@@ -308,74 +308,70 @@ const UserDashboard = () => {
                                     <motion.div
                                         layout
                                         key={complaint._id}
-                                        className="premium-card p-8 group relative overflow-hidden"
+                                        className="premium-card p-5 group relative overflow-hidden"
                                     >
-                                        <div className="absolute top-0 right-0 p-5 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
-                                            <Shield size={80} className="text-indigo-600" />
+                                        <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+                                            <Shield size={60} className="text-indigo-600" />
                                         </div>
-                                        <div className="flex justify-between items-start mb-6">
+                                        <div className="flex justify-between items-start mb-4">
                                             <span className={clsx(
-                                                "px-3 py-1 rounded-xl text-[10px] uppercase font-black tracking-widest border",
+                                                "px-2.5 py-1 rounded-lg text-[9px] uppercase font-black tracking-widest border",
                                                 complaint.priority === 'High' ? "bg-red-50 text-red-600 border-red-100" :
                                                     complaint.priority === 'Medium' ? "bg-amber-50 text-amber-600 border-amber-100" : "bg-emerald-50 text-emerald-600 border-emerald-100"
                                             )}>
                                                 {complaint.priority}
                                             </span>
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-1.5">
                                                 {complaint.status === 'Pending' && (
                                                     <button
                                                         onClick={() => handleEdit(complaint)}
-                                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                                                        className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
                                                         title="Edit Complaint"
                                                     >
-                                                        <Pencil size={18} />
+                                                        <Pencil size={15} />
                                                     </button>
                                                 )}
                                                 <button
                                                     onClick={() => handleDelete(complaint._id)}
-                                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                                                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                                     title="Delete Complaint"
                                                 >
-                                                    <Trash2 size={18} />
+                                                    <Trash2 size={15} />
                                                 </button>
-                                                <div className="flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-xl bg-white border border-slate-100 shadow-sm shadow-slate-100/50">
+                                                <div className="flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-lg bg-white border border-slate-100 shadow-sm shadow-slate-100/50">
                                                     {statusIcons[complaint.status]}
                                                     <span className="text-slate-700 uppercase tracking-tighter whitespace-nowrap">{complaint.status}</span>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <h3 className="text-xl font-extrabold mb-3 line-clamp-1 group-hover:text-indigo-600 transition-colors uppercase tracking-tight font-outfit text-slate-900">{complaint.title}</h3>
-                                        <p className="text-slate-500 text-sm mb-6 line-clamp-3 leading-relaxed font-medium">{complaint.description}</p>
-
+                                        <h3 className="text-lg font-extrabold mb-2 line-clamp-1 group-hover:text-indigo-600 transition-colors uppercase tracking-tight font-outfit text-slate-900">{complaint.title}</h3>
+                                        <p className="text-slate-500 text-[13px] mb-4 line-clamp-2 leading-relaxed font-medium">{complaint.description}</p>
                                         {complaint.status === 'In Progress' && (
-                                            <div className="mb-6 flex justify-center">
+                                            <div className="mb-4 flex justify-center scale-90 origin-center">
                                                 {complaint.estimatedCompletionDate ? (
                                                     <CountdownTimer targetDate={complaint.estimatedCompletionDate} />
                                                 ) : (
-                                                    <div className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-2">
-                                                        <Clock size={14} className="text-slate-400" />
-                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Resolution Time Pending</span>
+                                                    <div className="px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-100 flex items-center gap-1.5">
+                                                        <Clock size={12} className="text-slate-400" />
+                                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Resolution Time Pending</span>
                                                     </div>
                                                 )}
                                             </div>
                                         )}
-
-                                        <div className="flex items-center justify-between pt-5 border-t border-slate-50">
-                                            <div className="flex items-center gap-2 text-xs text-slate-400 font-bold">
-                                                <Clock size={14} />
+                                        <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                                            <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-bold">
+                                                <Clock size={12} />
                                                 {new Date(complaint.createdAt).toLocaleDateString()}
                                             </div>
-                                            <span className="text-[11px] font-black px-3 py-1.5 bg-indigo-50/50 rounded-xl text-indigo-600 border border-indigo-50 uppercase tracking-widest">{complaint.category}</span>
+                                            <span className="text-[10px] font-black px-2.5 py-1 bg-indigo-50/50 rounded-lg text-indigo-600 border border-indigo-50 uppercase tracking-widest">{complaint.category}</span>
                                         </div>
-
                                         {complaint.resolution && (
-                                            <div className="mt-5 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 shadow-inner">
-                                                <div className="flex items-center gap-2 mb-1.5">
-                                                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                                    <p className="text-[11px] font-black text-emerald-600 uppercase tracking-[0.1em]">Official Response</p>
+                                            <div className="mt-4 p-3 bg-emerald-50 rounded-xl border border-emerald-100 shadow-inner">
+                                                <div className="flex items-center gap-1.5 mb-1">
+                                                    <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></div>
+                                                    <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.1em]">Response</p>
                                                 </div>
-                                                <p className="text-xs text-emerald-700 font-medium leading-relaxed italic">"{complaint.resolution}"</p>
+                                                <p className="text-[11px] text-emerald-700 font-medium leading-relaxed italic">"{complaint.resolution}"</p>
                                             </div>
                                         )}
                                     </motion.div>

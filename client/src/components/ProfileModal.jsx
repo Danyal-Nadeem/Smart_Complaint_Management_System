@@ -126,9 +126,9 @@ const ProfileModal = ({ isOpen, onClose, initialView = 'view' }) => {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="py-3 rounded-xl bg-indigo-600 text-white font-bold premium-shadow hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                        className="py-3 rounded-xl bg-slate-900 text-white font-bold premium-shadow hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                     >
-                                        {loading ? 'Saving...' : <><Check size={18} /> Save</>}
+                                        {loading ? 'Saving...' : <><Check size={18} /> Save Changes</>}
                                     </button>
                                 </div>
                             </form>
