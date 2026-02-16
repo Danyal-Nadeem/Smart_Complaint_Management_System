@@ -9,6 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isEditable, setIsEditable] = useState(false);
 
     const { login, logout } = useAuth();
     const navigate = useNavigate();
@@ -88,7 +89,7 @@ const Login = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="w-full max-w-sm relative z-10"
+                    className="w-full max-w-[340px] relative z-10"
                 >
                     <div className="mb-4 flex items-center justify-between">
                         <Link to="/" className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 font-bold text-sm transition-all group">
@@ -96,16 +97,16 @@ const Login = () => {
                         </Link>
                     </div>
 
-                    <div className="premium-card p-6 sm:p-8">
+                    <div className="premium-card p-5 sm:p-6">
                         <div className="flex flex-col items-center mb-8 sm:mb-10 lg:hidden">
                             <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6">
                                 <Shield className="text-indigo-600" size={32} />
                             </div>
                         </div>
 
-                        <div className="flex flex-col items-center mb-8 sm:mb-10">
-                            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-outfit text-slate-900 text-center">Welcome Back</h1>
-                            <p className="text-slate-500 mt-2 font-medium text-sm sm:text-base text-center">Enter your credentials to access CMS</p>
+                        <div className="flex flex-col items-center mb-6 sm:mb-8">
+                            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-outfit text-slate-900 text-center">Welcome Back</h1>
+                            <p className="text-slate-500 mt-1.5 font-medium text-xs sm:text-sm text-center">Enter your credentials to access CMS</p>
                         </div>
 
                         {error && (
@@ -115,7 +116,7 @@ const Login = () => {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2">
                                 <label className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Email Address</label>
                                 <div className="relative group">
@@ -127,6 +128,10 @@ const Login = () => {
                                         onChange={(e) => setEmail(e.target.value)}
                                         className="input-field"
                                         placeholder="name@company.com"
+                                        autoComplete="email"
+                                        name="email"
+                                        readOnly={!isEditable}
+                                        onFocus={() => setIsEditable(true)}
                                     />
                                 </div>
                             </div>
@@ -142,6 +147,10 @@ const Login = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="input-field"
                                         placeholder="••••••••"
+                                        autoComplete="current-password"
+                                        name="password"
+                                        readOnly={!isEditable}
+                                        onFocus={() => setIsEditable(true)}
                                     />
                                 </div>
                             </div>

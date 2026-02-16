@@ -117,7 +117,7 @@ const Register = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="w-full max-w-[420px] relative z-10"
+                    className="w-full max-w-[340px] relative z-10"
                 >
                     <div className="mb-4 flex items-center justify-between">
                         <Link to="/" className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 font-bold text-sm transition-all group">
@@ -125,7 +125,7 @@ const Register = () => {
                         </Link>
                     </div>
 
-                    <div className="premium-card p-6 sm:p-8">
+                    <div className="premium-card p-5 sm:p-6">
                         {isSuccess ? (
                             <div className="py-10 text-center">
                                 <motion.div
@@ -155,9 +155,9 @@ const Register = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-center mb-8 sm:mb-10">
-                                    <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-outfit text-slate-900 text-center">Create Account</h1>
-                                    <p className="text-slate-500 mt-2 font-medium text-sm sm:text-base text-center">Join our smart management system</p>
+                                <div className="flex flex-col items-center mb-6 sm:mb-8">
+                                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-outfit text-slate-900 text-center">Create Account</h1>
+                                    <p className="text-slate-500 mt-1.5 font-medium text-xs sm:text-sm text-center">Join our smart management system</p>
                                 </div>
 
                                 {error && (
@@ -167,7 +167,7 @@ const Register = () => {
                                     </div>
                                 )}
 
-                                <form onSubmit={handleSubmit} className="space-y-6">
+                                <form onSubmit={handleSubmit} className="space-y-4">
                                     <div className="space-y-2">
                                         <label className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Full Name</label>
                                         <div className="relative group">

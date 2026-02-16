@@ -9,6 +9,7 @@ const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isEditable, setIsEditable] = useState(false);
     const { login, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -87,7 +88,7 @@ const AdminLogin = () => {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="w-full max-w-sm relative z-10"
+                    className="w-full max-w-[340px] relative z-10"
                 >
                     <div className="mb-8 flex items-center justify-between">
                         <Link to="/" className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 font-bold text-sm transition-all group">
@@ -95,19 +96,19 @@ const AdminLogin = () => {
                         </Link>
                     </div>
 
-                    <div className="premium-card p-6 sm:p-8 relative overflow-hidden">
+                    <div className="premium-card p-5 sm:p-6 relative overflow-hidden">
                         <div className="flex flex-col items-center mb-8 sm:mb-10 lg:hidden">
                             <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center mb-6">
                                 <ShieldCheck className="text-white" size={32} />
                             </div>
                         </div>
 
-                        <div className="flex flex-col items-center mb-8 sm:mb-10">
-                            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-outfit text-slate-900 text-center">Admin Access</h1>
-                            <p className="text-slate-500 mt-2 font-medium text-sm sm:text-base text-center">Management portal authentication</p>
+                        <div className="flex flex-col items-center mb-6 sm:mb-8">
+                            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-outfit text-slate-900 text-center">Admin Access</h1>
+                            <p className="text-slate-500 mt-1.5 font-medium text-xs sm:text-sm text-center">Management portal authentication</p>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2">
                                 <label className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Admin Email</label>
                                 <div className="relative group">
@@ -116,8 +117,12 @@ const AdminLogin = () => {
                                         type="email" required
                                         className="input-field pl-12"
                                         placeholder="admin@company.com"
+                                        autoComplete="email"
+                                        name="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
+                                        readOnly={!isEditable}
+                                        onFocus={() => setIsEditable(true)}
                                     />
                                 </div>
                             </div>
@@ -130,8 +135,12 @@ const AdminLogin = () => {
                                         type="password" required
                                         className="input-field pl-12"
                                         placeholder="••••••••"
+                                        autoComplete="current-password"
+                                        name="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
+                                        readOnly={!isEditable}
+                                        onFocus={() => setIsEditable(true)}
                                     />
                                 </div>
                             </div>
