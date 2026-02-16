@@ -8,6 +8,7 @@ import { clsx } from 'clsx';
 import { useAuth } from '../context/AuthContext';
 import AdminSidebar from '../components/AdminSidebar';
 import ComplaintDetailsModal from '../components/ComplaintDetailsModal';
+import CustomDropdown from '../components/CustomDropdown';
 
 const ComplaintHistory = () => {
     const { user, isSystemOnline } = useAuth();
@@ -137,16 +138,17 @@ const ComplaintHistory = () => {
                                 </div>
                                 <div className="flex items-center gap-2 w-full sm:w-auto">
                                     <Filter className="text-slate-400" size={18} />
-                                    <select
-                                        className="input-field !px-0 py-3 cursor-pointer min-w-[170px] appearance-auto text-center"
+                                    <CustomDropdown
+                                        className="min-w-[170px]"
+                                        options={[
+                                            { label: 'Latest', value: 'latest' },
+                                            { label: 'Oldest', value: 'oldest' },
+                                            { label: 'High Priority', value: 'priority-desc' },
+                                            { label: 'Low Priority', value: 'priority-asc' }
+                                        ]}
                                         value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
-                                    >
-                                        <option value="latest">Latest</option>
-                                        <option value="oldest">Oldest</option>
-                                        <option value="priority-desc">High Priority</option>
-                                        <option value="priority-asc">Low Priority</option>
-                                    </select>
+                                        onChange={(val) => setSortBy(val)}
+                                    />
                                 </div>
                             </div>
                         </div>

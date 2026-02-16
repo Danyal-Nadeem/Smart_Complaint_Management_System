@@ -7,6 +7,7 @@ import UserSidebar from '../components/UserSidebar';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import CountdownTimer from '../components/CountdownTimer';
+import CustomDropdown from '../components/CustomDropdown';
 
 const UserDashboard = () => {
     const { isSystemOnline } = useAuth();
@@ -221,29 +222,19 @@ const UserDashboard = () => {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                         <div className="space-y-2.5">
                                             <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Category</label>
-                                            <select
-                                                className="input-field !px-0 text-center appearance-auto"
+                                            <CustomDropdown
+                                                options={['General', 'Technical', 'Hostel', 'Academic', 'Other']}
                                                 value={formData.category}
-                                                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                            >
-                                                <option>General</option>
-                                                <option>Technical</option>
-                                                <option>Hostel</option>
-                                                <option>Academic</option>
-                                                <option>Other</option>
-                                            </select>
+                                                onChange={(val) => setFormData({ ...formData, category: val })}
+                                            />
                                         </div>
                                         <div className="space-y-2.5">
                                             <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Priority</label>
-                                            <select
-                                                className="input-field !px-0 text-center appearance-auto"
+                                            <CustomDropdown
+                                                options={['Low', 'Medium', 'High']}
                                                 value={formData.priority}
-                                                onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                                            >
-                                                <option>Low</option>
-                                                <option>Medium</option>
-                                                <option>High</option>
-                                            </select>
+                                                onChange={(val) => setFormData({ ...formData, priority: val })}
+                                            />
                                         </div>
                                     </div>
 

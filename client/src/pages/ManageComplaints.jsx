@@ -8,6 +8,7 @@ import { clsx } from 'clsx';
 import { useAuth } from '../context/AuthContext';
 import AdminSidebar from '../components/AdminSidebar';
 import ComplaintDetailsModal from '../components/ComplaintDetailsModal';
+import CustomDropdown from '../components/CustomDropdown';
 
 const ManageComplaints = () => {
     const { user, isSystemOnline } = useAuth();
@@ -152,16 +153,17 @@ const ManageComplaints = () => {
                                 </div>
                                 <div className="flex items-center gap-2 w-full sm:w-auto">
                                     <Filter className="text-slate-400" size={18} />
-                                    <select
-                                        className="input-field !px-0 py-3 cursor-pointer min-w-[170px] appearance-auto text-center"
+                                    <CustomDropdown
+                                        className="min-w-[170px]"
+                                        options={[
+                                            { label: 'Latest', value: 'latest' },
+                                            { label: 'Oldest', value: 'oldest' },
+                                            { label: 'High Priority', value: 'priority-desc' },
+                                            { label: 'Low Priority', value: 'priority-asc' }
+                                        ]}
                                         value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
-                                    >
-                                        <option value="latest">Latest</option>
-                                        <option value="oldest">Oldest</option>
-                                        <option value="priority-desc">High Priority</option>
-                                        <option value="priority-asc">Low Priority</option>
-                                    </select>
+                                        onChange={(val) => setSortBy(val)}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -214,17 +216,12 @@ const ManageComplaints = () => {
                                             <td className="px-4 sm:px-10 py-6 sm:py-8">
                                                 {editingId === c._id ? (
                                                     <>
-                                                        <select
-                                                            className="input-field !px-0 py-2 text-xs font-bold w-[100px] sm:w-[120px] cursor-pointer text-center"
+                                                        <CustomDropdown
+                                                            className="!px-2 py-2 text-xs font-bold w-[120px] sm:w-[140px]"
+                                                            options={['Pending', 'In Progress', 'Resolved', 'Rejected']}
                                                             value={updateForm.status}
-                                                            onClick={(e) => e.stopPropagation()}
-                                                            onChange={(e) => setUpdateForm({ ...updateForm, status: e.target.value })}
-                                                        >
-                                                            <option value="Pending">Pending</option>
-                                                            <option value="In Progress">In Progress</option>
-                                                            <option value="Resolved">Resolved</option>
-                                                            <option value="Rejected">Rejected</option>
-                                                        </select>
+                                                            onChange={(val) => setUpdateForm({ ...updateForm, status: val })}
+                                                        />
                                                         {updateForm.status === 'In Progress' && (
                                                             <div className="mt-2 flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
                                                                 <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest text-left ml-1">Est. Completion</label>

@@ -8,6 +8,7 @@ import {
 import { clsx } from 'clsx';
 import { useAuth } from '../context/AuthContext';
 import AdminSidebar from '../components/AdminSidebar';
+import CustomDropdown from '../components/CustomDropdown';
 
 const UserAnalytics = () => {
     const { isSystemOnline } = useAuth();
@@ -162,15 +163,16 @@ const UserAnalytics = () => {
                                 </div>
                                 <div className="flex items-center gap-2 w-full sm:w-auto">
                                     <Filter className="text-slate-400" size={18} />
-                                    <select
-                                        className="input-field !px-0 py-3 cursor-pointer min-w-[170px] appearance-auto text-center"
+                                    <CustomDropdown
+                                        className="min-w-[170px]"
+                                        options={[
+                                            { label: 'Sort by Activity', value: 'total' },
+                                            { label: 'Sort by Success', value: 'resolved' },
+                                            { label: 'Sort by Name', value: 'name' }
+                                        ]}
                                         value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
-                                    >
-                                        <option value="total">Sort by Activity</option>
-                                        <option value="resolved">Sort by Success</option>
-                                        <option value="name">Sort by Name</option>
-                                    </select>
+                                        onChange={(val) => setSortBy(val)}
+                                    />
                                 </div>
                             </div>
                         </div>
