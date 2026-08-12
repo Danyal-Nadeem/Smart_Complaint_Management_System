@@ -139,7 +139,7 @@ const Navbar = () => {
     return (
         <>
             <nav className="glass fixed top-0 left-0 right-0 z-50">
-                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+                <div className="w-full px-4 h-16 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2 sm:gap-3 text-xl sm:text-2xl font-black text-slate-900 tracking-tight transition-transform active:scale-95 shrink-0">
                         <div className="relative">
                             <Shield className="text-indigo-600 fill-indigo-50 w-6 h-6 sm:w-8 sm:h-8" strokeWidth={2.5} />

@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
         const interceptor = axios.interceptors.response.use(
             (response) => response,
             (error) => {
-                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                if (error.response && error.response.status === 401) {
                     logout();
                 }
                 return Promise.reject(error);
@@ -85,8 +85,11 @@ export const AuthProvider = ({ children }) => {
             const { data } = await axios.put(`${SOCKET_URL}/api/system/toggle`, {}, config);
             setIsSystemOnline(data.data.isSystemOnline);
         } catch (error) {
-            console.error('Error toggling system status', error);
-            throw error;
+            if (error.response?.status === 403) {
+                alert('Only the Super Admin can toggle system status.');
+            } else {
+                console.error('Error toggling system status', error);
+            }
         }
     };
 

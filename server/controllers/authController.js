@@ -8,6 +8,8 @@ const sendEmail = require('../utils/sendEmail');
 // @access  Public
 exports.register = async (req, res) => {
     try {
+        const { name, email, password, role } = req.body;
+
         // Create user
         const finalRole = role === 'admin' ? 'admin' : 'user';
         const isUser = finalRole === 'user';
